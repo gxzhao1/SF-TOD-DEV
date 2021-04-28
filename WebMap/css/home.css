@@ -1,0 +1,190 @@
+/* ============= General ============= */
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: url("../img/sf-housing.jpg") no-repeat center center fixed;
+  background-size: cover;
+  height: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
+}
+
+.heading {
+  background: rgba(56, 54, 54, 0.49);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left:0;
+  margin: 2vmin 3vmin;
+  color: white; 
+  font-family: 'Lato', serif; 
+  font-size: 20px; 
+  font-weight: normal; 
+  text-align: center;
+}
+
+/* ============= navbar ============= */
+.navbar {
+  position: fixed;
+  width: 100%;
+  height: 10%;
+  right: 0px;
+  top: 0px;
+  background: #a9c9e3;
+  opacity: 0.8;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  z-index:100;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+.navbar .navbar-brand{
+  left: 1%;
+  font-size: 23px;
+  font-weight: bold;
+  position: absolute;
+  color: #4c3d3a;
+}
+
+.navbar-nav {
+  position: absolute;
+  right: 8%;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: #4c3d3a;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 23px;
+  font-weight:500;
+}
+
+.d-flex{
+  position: absolute;
+  right: 20%;
+}
+
+#nav-item{
+    position: absolute;
+    right: 15%;
+}
+
+#sidebarCollapse{
+  position: absolute;
+  right: 1%;
+}
+
+
+/* ============= body content ============= */
+.textbox {
+  position:absolute;
+  left:0%;
+  width:100%;
+  height:100%;
+  top:0px;
+  z-index: 20;
+}
+
+.blackcover {
+  height: 100%;
+  background-color: black;
+  opacity: 0.2;
+  right: 0px;
+  z-index: 10;
+}
+
+.container{
+  position: absolute;
+  top: 25%;
+  left: -20%;
+  right: -20%;
+}
+
+.container>h1{
+  color: #ffffff;
+  font-family: 'Helvetica', 'Arial',sans-serif;
+  font-size: 52px;
+  font-weight:bold;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: whitesmoke;
+  line-height: 63px;
+  margin: 22px 40px 22px;
+  text-align: left;
+  /* text-transform: uppercase; */
+}
+
+.container>h2{
+  color: #f8f8f8; 
+  font-family: "Verdana", cursive; 
+  font-size: 20px; 
+  font-weight: 500; 
+  line-height: 32px; 
+  margin: 32px 40px 32px;
+  text-align: left;
+}
+
+
+/* ============= buttons ============= */
+.button {
+  flex: 1;
+  padding: 2px 10px;
+  margin: 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  text-shadow: 0 3px 5px rgba(#000, 0.25);
+  white-space: nowrap;
+  color: #fff;
+  background: transparent;
+  background-image: url(https://web.archive.org/web/20160312084140im_/http://splatoon.nintendo.com/assets/img/nav-bg-fill-turq.png?1443460871);
+  background-repeat: repeat-x;
+  background-position: 0 -10%;
+  transition: 3.5s ease;
+}
+  
+.button:hover {
+    background-position: 500% 100%;
+}
+
+#button1 {
+  background-color: #a9c9e3;
+  position: absolute;
+  left: 40%;
+  top: 125%;
+}
+
+
+/* .button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+ */
+
+/* ============= Others ============= */
+img{
+  width:12%;
+  height:4%;
+}
+
+#intro{
+  position: relative;
+  top: 40px;
+  left:110px;
+  z-index: 99999999;
+}
