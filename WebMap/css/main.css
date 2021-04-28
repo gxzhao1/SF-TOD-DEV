@@ -1,0 +1,337 @@
+/* ============= General ============= */
+
+body {
+    /* background-color: #F1F1F1; */
+    background: url("../img/sf-housing.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+            align-items: center;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+  }
+
+/* ============= navbar ============= */
+.navbar {
+    position: fixed;
+    width: 100%;
+    height: 10%;
+    right: 0px;
+    top: 0px;
+    background: #a9c9e3;
+    opacity: 0.8;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    z-index:100;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+  }
+  
+  .navbar .navbar-brand{
+    left: 1%;
+    font-size: 23px;
+    font-weight: bold;
+    position: absolute;
+    color: #4c3d3a;
+  }
+  
+  .navbar-nav {
+    position: absolute;
+    right: 8%;
+  }
+  
+  .navbar-light .navbar-nav .nav-link {
+    color: #4c3d3a;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 23px;
+    font-weight:500;
+  }
+  
+  .d-flex{
+    position: absolute;
+    right: 20%;
+  }
+
+  #nav-item{
+      position: absolute;
+      right: 15%;
+  }
+
+  #sidebarCollapse{
+    position: absolute;
+    right: 1%;
+}
+
+/* ============= Map ============= */
+.map {
+    position: absolute;
+    right: 540px;
+    left: 0px;
+    height: 100%;
+    top: 10%;
+    z-index: -10;
+}
+
+#map {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+.list-group-item {
+    background-color: transparent;
+    color: white;
+}
+
+.list-group-item-action.active {
+    background-color: #a8dadc;
+    border-color: #a8dadc
+    color: white;
+}
+
+.leaflet-marker-icon {
+    border:0;
+    border-radius:50%;
+}
+
+.SFstations {
+    background-color: #3f999a
+  }
+  
+.Others {
+    background-color: #9bc1bc
+}
+
+.propertyPoint {
+    background-color: pink
+}
+
+/*Legend specific*/
+.legend {
+    padding: 6px 8px;
+    font: 10px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+    /*border-radius: 5px;*/
+    line-height: 24px;
+    color: #555;
+    bottom: 100px;
+    left: 15px;
+
+  }
+  
+  .legend h4 {
+    text-align: center;
+    font-size: 16px;
+    margin: 2px 12px 8px;
+    color: #777;
+  }
+  
+  .legend span {
+    position: relative;
+    bottom: 3px;
+  }
+  
+  .legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin: 0 8px 0 0;
+    opacity: 0.7;
+  }
+  
+  .legend i.icon {
+    background-size: 18px;
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+
+
+
+/* ============= Sidebar ============= */
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 40vw;
+    max-width: 40vw;
+    background-color: #DADADA;
+    opacity: 0.8;
+    transition: all 0.3s;
+    right: 0px;
+    z-index: 90;
+}
+
+#sidebar.active {
+    position: absolute;
+    right: 0px;
+    width: 40vw;
+    top: 10%;
+    bottom: 0;
+}
+
+#map.active {
+    position: absolute;
+    right: 0px;
+    width: 60vw;
+    top: 10%;
+    bottom: 0;
+}
+
+
+/* old sidebar 
+.sidebar {
+    position: absolute;
+    right: 0px;
+    width: 540px;
+    top: 10%;
+    bottom: 0;
+    overflow-y: auto;
+    background-color: white;
+    opacity: 0.8;
+}
+
+.item {
+    margin: 5px;
+    background-color: #e8e8e4;
+    padding:5px;
+}
+
+.item:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.item-heading {
+    font-size: 18px;
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.sort {
+    position: fixed;
+    bottom: 0;
+
+    width: 340px;
+    background-color: #fff;
+    padding: 5px;
+}
+
+.sort-option {
+    margin-left: 10px;
+}
+
+.sort-option.selected {
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+
+
+.sidebar .nav.navbar-default {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #eee;
+} 
+
+.col-4 {
+    background-color: #1d3557;
+    padding-bottom: 100%; 
+    margin-bottom: -100%;
+}
+
+.col-8 {
+    background-color: white;
+    padding-bottom: 100%; 
+    margin-bottom: -100%;
+}
+
+.dropdown-menu {
+    text-align: left;
+}
+
+#floatingInput {
+    height: auto;
+}
+
+#sales {
+    font-size: 100px;
+    color: #457b9d;
+}
+
+#dropdownMenuButton1 {
+    background-color: #457b9d;
+    border-color: #457b9d;
+}
+
+*/
+  
+
+
+/* =============
+Media Queries
+============= */
+
+@media screen and (min-width: 480px) and (max-width: 800px) {
+    /*.item {
+        background-color: blue;
+    }*/
+    .map {
+        position: absolute;
+        right: 300px;
+        left: 0px;
+        height: 100%;
+        top: 10%;
+        z-index: -10;
+    }
+
+    .sidebar {
+        position: absolute;
+        right: 0px;
+        width: 300px;
+        top: 0;
+        bottom: 0;
+        overflow-y: auto;
+    }
+
+    .col-4 {
+        background-color: #1d3557;
+        padding-bottom: 100%; 
+        margin-bottom: -100%;
+        width: 100%;
+    }
+    .col-8 {
+        background-color: white;
+        padding-bottom: 100%; 
+        margin-bottom: -100%;
+        width:100%;
+    }
+
+}
+
+@media screen and (max-width: 479px) {
+    /*.item {
+        background-color: red;
+    }*/
+    .map {
+        position: absolute;
+        right: 0px;
+        left: 0px;
+        height: 100%;
+        top: 10%;
+    }
+
+    .sidebar {
+        position: absolute;
+        left: 0px;
+        width: 0px;
+        top: 10%;
+        bottom: 0;
+        overflow-y: auto;
+    }
+}
