@@ -15,7 +15,8 @@ var Stamen_TonerLite = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{
 /* Global Vars */
 var stationDataset = "https://raw.githubusercontent.com/gxzhao1/SF-TOD-DEV/main/Data/BART_Station.geojson";
 var propertyDataset = "https://data.sfgov.org/resource/wv5m-vpq2.json?closed_roll_year=2019&property_class_code=D";
-var inputValue;
+var inputValue ;
+var filteredProperty;
 
 var legend = L.control({ position: "bottomleft" });
 legend.onAdd = function(map) {
@@ -73,17 +74,27 @@ function plotPropertyMarker(data) {
       var markerOptions = { icon: customIcon }; 
       return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],
         markerOptions 
-        ).addTo(map)/* .bindPopup(
-            "Name: " + a.properties.Name +
-            "<br>Address: " + a.properties.Street +
-            "<br>Link: " + a.properties.Link) */
+        ).addTo(map) .bindPopup(
+            "Neighborhood: " + a.assessor_neighborhood +
+            "<br>Address: " + a.property_location +
+            "<br>Year Built: " + a.year_property_built+
+            "<br>Use: " +a.use_definition+
+            "<br>Personal Property Value: "+a.assessed_personal_property_value+
+            "<br>Land Value: " + a.assessed_land_value +
+            "<br>Improvement Value: " +a. assessed_improvement_value 
+            ) 
     }
   })
 }
 
 
+
+                 
+
+
 /* ===================== Main Process ===================== */
-$.when(
+
+  $.when(
   $.ajax(stationDataset), 
   $.ajax(propertyDataset)).then(function(station, property) {
   stationData = JSON.parse(station[0]).features;
@@ -91,12 +102,6 @@ $.when(
   console.log(propertyData)
   plotStationMarker(stationData);
   plotStationBuffer(stationData);
-/*   I tried plotting with an example - it worked!
-  filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == "russian hill");
-  console.log(filteredProperty)
-  plotPropertyMarker(filteredProperty); */
-
-  
 
   $('#sidebarCollapse').on('click', function (e) {
     $('#sidebar').toggleClass('active');
@@ -104,12 +109,18 @@ $.when(
   });
 
   $("#searchButton").on("click", function(e) {
-    const inputValue = $('#searchInput').val();
-    console.log(inputValue);  /* I could not make inputValue a global variable or plot within this click event! Console log doesn't work but alert() does/ */
-  })  
+    inputValue= $('#searchInput').val()
+    filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == inputValue)
+    plotPropertyMarker(filteredProperty)
+    // console.log(filteredProperty)
+    return(inputValue,filteredProperty);  
+  })   
 
-  /* These don't work yet */
-  filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == inputValue);
-  plotPropertyMarker(filteredProperty);
+  
 
 })
+  
+
+
+
+
