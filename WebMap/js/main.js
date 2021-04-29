@@ -17,6 +17,8 @@ var stationDataset = "https://raw.githubusercontent.com/gxzhao1/SF-TOD-DEV/main/
 var propertyDataset = "https://data.sfgov.org/resource/wv5m-vpq2.json?closed_roll_year=2019&property_class_code=D";
 var inputValue ;
 var filteredProperty;
+var previousmarkers=[];
+var currentmarkers=[];
 
 var legend = L.control({ position: "bottomleft" });
 legend.onAdd = function(map) {
@@ -67,6 +69,24 @@ function plotStationBuffer(data) {
   })
 }
 
+
+// var makeMarkers = function(data) {
+//   data.map(function(a) {
+//     if (Object.keys(a).includes("the_geom")){
+//       var customIcon = L.divIcon({className: "propertyPoint"});
+//       var markerOptions = { icon: customIcon }; 
+//       return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],markerOptions)
+//     }
+//     })
+//   }
+ 
+
+// var removeMarkers = function(data) {
+//     _.each(data,function(entries){
+//       map.removeLayer(entries)
+//     })
+// };
+  
 function plotPropertyMarker(data) {
   data.map(function(a) {
     if (Object.keys(a).includes("the_geom")) {
@@ -88,37 +108,91 @@ function plotPropertyMarker(data) {
 }
 
 
+// var resetMap = function (){
+//   _.each(previousmarkers,function(marker,i){
+//     map.removeLayer(marker);
+//   })
+//   previousmarkers=[];
+// }
+
+
+
 
                  
 
 
 /* ===================== Main Process ===================== */
+$.when(
+  $.ajax({
+    url:"https://raw.githubusercontent.com/gxzhao1/SF-TOD-DEV/main/Data/BART_Station.geojson",
+    type:"GET",
+    data: {
+      format: 'geojson'
+    }
+  }),
+  $.ajax({
+    type:"GET",
+    url: "https://data.sfgov.org/resource/wv5m-vpq2.json",
+    data: {
+      "$limit" : 5000,
+      "$$app_token" : "1tkBmJ7LlU1rL4drYdWaz9Ytr"
+    }
+  })
+).then(function(station, property) {
+    stationData = JSON.parse(station[0]).features;
+    propertyData = property[0];
+    console.log(propertyData)
+    plotStationMarker(stationData);
+    plotStationBuffer(stationData);
+  
+    $('#sidebarCollapse').on('click', function (e) {
+      $('#sidebar').toggleClass('active');
+      $('#map').toggleClass('active');
+    });
+  
+    $("#searchButton").on("click", function(e) {
+      // resetMap();
+      inputValue= $('#searchInput').val()
+      filteredProperty = propertyData.filter(a => a.assessor_neighborhood == inputValue)  /*toLowerCase(): cannot read property :toLowerCase" of undefined*/
+      plotPropertyMarker(filteredProperty)
+      previousmarkers = currentmarkers;
+      // console.log(filteredProperty)
+      return(inputValue,filteredProperty);  
+    })   
+  })
 
-  $.when(
-  $.ajax(stationDataset), 
-  $.ajax(propertyDataset)).then(function(station, property) {
-  stationData = JSON.parse(station[0]).features;
-  propertyData = property[0];
-  console.log(propertyData)
-  plotStationMarker(stationData);
-  plotStationBuffer(stationData);
+//   $.when(
+//   $.ajax(stationDataset), 
+//   $.ajax(propertyDataset)).then(function(station, property) {
+//   stationData = JSON.parse(station[0]).features;
+//   propertyData = property[0];
+//   console.log(propertyData)
+//   plotStationMarker(stationData);
+//   plotStationBuffer(stationData);
 
-  $('#sidebarCollapse').on('click', function (e) {
-    $('#sidebar').toggleClass('active');
-    $('#map').toggleClass('active');
-  });
+//   $('#sidebarCollapse').on('click', function (e) {
+//     $('#sidebar').toggleClass('active');
+//     $('#map').toggleClass('active');
+//   });
 
-  $("#searchButton").on("click", function(e) {
-    inputValue= $('#searchInput').val()
-    filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == inputValue)
-    plotPropertyMarker(filteredProperty)
-    // console.log(filteredProperty)
-    return(inputValue,filteredProperty);  
-  })   
+//   $("#searchButton").on("click", function(e) {
+//     inputValue= $('#searchInput').val()
+//     filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == inputValue)
+//     plotPropertyMarker(filteredProperty)
+//     console.log(filteredProperty)
+//     return(inputValue,filteredProperty);  
+//   })   
 
   
 
-})
+// })
+
+
+
+
+
+
+
   
 
 
