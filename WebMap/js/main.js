@@ -102,7 +102,7 @@ function plotStationBuffer(data) {
     //   })
 
     
-    })  /* Some neighborhood now working: like Cow Hollow, telegraph hill*/
+    })  
     }
 
     
