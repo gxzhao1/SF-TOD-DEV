@@ -19,6 +19,8 @@ var inputValue ;
 var filteredProperty;
 var previousmarkers=[];
 var currentmarkers=[];
+var Buffer1=[];
+var Buffer2=[];
 
 var legend = L.control({ position: "bottomleft" });
 legend.onAdd = function(map) {
@@ -57,6 +59,7 @@ function plotStationMarker(data) {
       })
 }
 
+
 function plotStationBuffer(data) {
   data.map(function(a) {
     if (a.properties.City == "San Francisco") {
@@ -64,16 +67,16 @@ function plotStationBuffer(data) {
       var stationBuffer1 = turf.buffer(stationPoint, 0.5, "miles");
       var stationBuffer2 = turf.buffer(stationPoint, 1, "miles");
       L.polygon(stationBuffer1.geometry.coordinates, {color: '#977f8c'}).addTo(map);
-      L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'}).addTo(map)
+      L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'}).addTo(map);
     }
   })
 }
 
 
 
-  var makeMarkers = function() {
-    return _.map(filteredProperty,function(a){
-      if (Object.keys(a).includes("the_geom")){
+  var makeMarkers = function(data) {
+     return data.map(function(a){
+      if (Object.keys(a).includes("the_geom")==true){  /* Not Working */
         var customIcon = L.divIcon({className: "propertyPoint"});
         var markerOptions = { icon: customIcon };
         return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],markerOptions).bindPopup("Neighborhood: " + a.assessor_neighborhood +
@@ -84,9 +87,26 @@ function plotStationBuffer(data) {
         "<br>Land Value: " + a.assessed_land_value +
         "<br>Improvement Value: " +a. assessed_improvement_value )
       }
+    // if (Object.keys(a).includes("the_geom")){  
+    // return _.map(filteredProperty,function(a){
+    //        /* Maybe it is because this if condition does not fiter the data*/
+    //     var customIcon = L.divIcon({className: "propertyPoint"});
+    //     var markerOptions = { icon: customIcon };
+    //     return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],markerOptions).bindPopup("Neighborhood: " + a.assessor_neighborhood +
+    //     "<br>Address: " + a.property_location +
+    //     "<br>Year Built: " + a.year_property_built+
+    //     "<br>Use: " +a.use_definition+
+    //     "<br>Personal Property Value: "+a.assessed_personal_property_value+
+    //     "<br>Land Value: " + a.assessed_land_value +
+    //     "<br>Improvement Value: " +a. assessed_improvement_value )
+    //   })
 
-    })
-    };
+    
+    })  /* Some neighborhood now working: like Cow Hollow, telegraph hill*/
+    }
+
+    
+  
  
 
   
@@ -142,7 +162,7 @@ $.when(
     type:"GET",
     url: "https://data.sfgov.org/resource/wv5m-vpq2.json",
     data: {
-      "$limit" : 5000,
+      "$limit" : 10000,
       "$$app_token" : "1tkBmJ7LlU1rL4drYdWaz9Ytr"
     }
   })
@@ -163,11 +183,15 @@ $.when(
       inputValue= $('#searchInput').val()
       filteredProperty = propertyData.filter(a => a.assessor_neighborhood == inputValue)  /*toLowerCase(): cannot read property :toLowerCase" of undefined*/
       currentmarkers = makeMarkers (filteredProperty)
+      var filtered = currentmarkers.filter(function(x){
+        return x !== undefined
+      })
+      currentmarkers=filtered
       // console.log(currentmarkers)
       plotPropertyMarker(currentmarkers)
       // console.log(previousmarkers)
       // plotPropertyMarker(filteredProperty)
-      previousmarkers = currentmarkers;
+      // previousmarkers = currentmarkers;
       // console.log(filteredProperty)
       return(inputValue,filteredProperty);  
     })  ;
