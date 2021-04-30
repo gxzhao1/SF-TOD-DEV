@@ -20,7 +20,11 @@ var filteredProperty;
 var previousmarkers=[];
 var currentmarkers=[];
 var Buffer1=[];
+var Buffer1Polygon=[];
 var Buffer2=[];
+var Buffer2Polygon=[];
+var propertypoints =[];
+
 
 var legend = L.control({ position: "bottomleft" });
 legend.onAdd = function(map) {
@@ -37,6 +41,12 @@ legend.onAdd = function(map) {
 legend.addTo(map); 
 
 /*====== Functions ======*/
+
+
+function getPropertyInBuffer (points,buffer){
+  var ptsWithinBuffer = turf.pointsWithinPolygon(turf.point(points),turf.polygon(buffer));
+  console.log(ptsWithinBuffer1)
+}
 
 
 /*=== Map Functions ===*/
@@ -59,17 +69,42 @@ function plotStationMarker(data) {
       })
 }
 
-
-function plotStationBuffer(data) {
-  data.map(function(a) {
-    if (a.properties.City == "San Francisco") {
+function makeBuffer1 (data){
+  return data.map(function(a){
+    if(a.properties.City == "San Francisco"){    /* Not Working */
       var stationPoint = turf.point([a.geometry.coordinates[1],a.geometry.coordinates[0]]);
       var stationBuffer1 = turf.buffer(stationPoint, 0.5, "miles");
-      var stationBuffer2 = turf.buffer(stationPoint, 1, "miles");
-      L.polygon(stationBuffer1.geometry.coordinates, {color: '#977f8c'}).addTo(map);
-      L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'}).addTo(map);
+      return L.polygon(stationBuffer1.geometry.coordinates, {color: '#977f8c'})
     }
   })
+}
+
+function makeBuffer2 (data){
+  return data.map(function(a){
+    if(a.properties.City == "San Francisco"){
+      var stationPoint = turf.point([a.geometry.coordinates[1],a.geometry.coordinates[0]]);
+      var stationBuffer2 = turf.buffer(stationPoint, 1, "miles");
+      return L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'})
+    }
+ 
+  })
+}
+
+
+function plotStationBuffer(buffer) {
+  _.each(buffer,function(a){
+    a.addTo(map)
+  })
+
+  // data.map(function(a) {
+  //   if (a.properties.City == "San Francisco") {
+  //     var stationPoint = turf.point([a.geometry.coordinates[1],a.geometry.coordinates[0]]);
+  //     var stationBuffer1 = turf.buffer(stationPoint, 0.5, "miles");
+  //     var stationBuffer2 = turf.buffer(stationPoint, 1, "miles");
+  //     L.polygon(stationBuffer1.geometry.coordinates, {color: '#977f8c'}).addTo(map);
+  //     L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'}).addTo(map);
+  //   }
+  // })
 }
 
 
@@ -87,21 +122,6 @@ function plotStationBuffer(data) {
         "<br>Land Value: " + a.assessed_land_value +
         "<br>Improvement Value: " +a. assessed_improvement_value )
       }
-    // if (Object.keys(a).includes("the_geom")){  
-    // return _.map(filteredProperty,function(a){
-    //        /* Maybe it is because this if condition does not fiter the data*/
-    //     var customIcon = L.divIcon({className: "propertyPoint"});
-    //     var markerOptions = { icon: customIcon };
-    //     return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],markerOptions).bindPopup("Neighborhood: " + a.assessor_neighborhood +
-    //     "<br>Address: " + a.property_location +
-    //     "<br>Year Built: " + a.year_property_built+
-    //     "<br>Use: " +a.use_definition+
-    //     "<br>Personal Property Value: "+a.assessed_personal_property_value+
-    //     "<br>Land Value: " + a.assessed_land_value +
-    //     "<br>Improvement Value: " +a. assessed_improvement_value )
-    //   })
-
-    
     })  
     }
 
@@ -171,7 +191,20 @@ $.when(
     propertyData = property[0];
     console.log(propertyData)
     plotStationMarker(stationData);
-    plotStationBuffer(stationData);
+    Buffer1 = makeBuffer1(stationData);
+    Buffer1 = Buffer1.filter(function(x){
+      return x!==undefined
+    })
+    Buffer2 = makeBuffer2(stationData);
+    Buffer2 = Buffer2.filter(function(x){
+      return x!==undefined
+    })
+    Buffer1Polygon = Buffer1.map(function(e){return [e._latlngs[0]]})
+    Buffer2Polygon = Buffer2.map(function(e){return [e._latlngs[0]]})
+    // console.log(Buffer1)
+    // console.log(Buffer2);
+    plotStationBuffer(Buffer1);
+    plotStationBuffer(Buffer2);
   
     $('#sidebarCollapse').on('click', function (e) {
       $('#sidebar').toggleClass('active');
@@ -181,17 +214,19 @@ $.when(
     $("#searchButton").on("click", function(e) {
       resetMap()
       inputValue= $('#searchInput').val()
-      filteredProperty = propertyData.filter(a => a.assessor_neighborhood == inputValue)  /*toLowerCase(): cannot read property :toLowerCase" of undefined*/
+      filteredProperty = propertyData.filter(a => a.assessor_neighborhood === inputValue)  /*toLowerCase(): cannot read property :toLowerCase" of undefined*/
+    
       currentmarkers = makeMarkers (filteredProperty)
-      var filtered = currentmarkers.filter(function(x){
+      currentmarkers=currentmarkers.filter(function(x){
         return x !== undefined
       })
-      currentmarkers=filtered
+      propertypoints = currentmarkers.map(function(e){return [e._latlng.lat,e._latlng.lng]})
+      console.log(propertypoints)
+      // getPropertyInBuffer(propertypoints,Buffer1Polygon)
+
       // console.log(currentmarkers)
       plotPropertyMarker(currentmarkers)
       // console.log(previousmarkers)
-      // plotPropertyMarker(filteredProperty)
-      // previousmarkers = currentmarkers;
       // console.log(filteredProperty)
       return(inputValue,filteredProperty);  
     })  ;
