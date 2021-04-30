@@ -70,50 +70,58 @@ function plotStationBuffer(data) {
 }
 
 
-// var makeMarkers = function(data) {
-//   data.map(function(a) {
-//     if (Object.keys(a).includes("the_geom")){
-//       var customIcon = L.divIcon({className: "propertyPoint"});
-//       var markerOptions = { icon: customIcon }; 
-//       return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],markerOptions)
-//     }
-//     })
-//   }
+
+  var makeMarkers = function() {
+    return _.map(filteredProperty,function(a){
+      if (Object.keys(a).includes("the_geom")){
+        var customIcon = L.divIcon({className: "propertyPoint"});
+        var markerOptions = { icon: customIcon };
+        return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],markerOptions).bindPopup("Neighborhood: " + a.assessor_neighborhood +
+        "<br>Address: " + a.property_location +
+        "<br>Year Built: " + a.year_property_built+
+        "<br>Use: " +a.use_definition+
+        "<br>Personal Property Value: "+a.assessed_personal_property_value+
+        "<br>Land Value: " + a.assessed_land_value +
+        "<br>Improvement Value: " +a. assessed_improvement_value )
+      }
+
+    })
+    };
  
 
-// var removeMarkers = function(data) {
-//     _.each(data,function(entries){
-//       map.removeLayer(entries)
-//     })
-// };
   
-function plotPropertyMarker(data) {
-  data.map(function(a) {
-    if (Object.keys(a).includes("the_geom")) {
-      var customIcon = L.divIcon({className: "propertyPoint"});
-      var markerOptions = { icon: customIcon }; 
-      return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],
-        markerOptions 
-        ).addTo(map) .bindPopup(
-            "Neighborhood: " + a.assessor_neighborhood +
-            "<br>Address: " + a.property_location +
-            "<br>Year Built: " + a.year_property_built+
-            "<br>Use: " +a.use_definition+
-            "<br>Personal Property Value: "+a.assessed_personal_property_value+
-            "<br>Land Value: " + a.assessed_land_value +
-            "<br>Improvement Value: " +a. assessed_improvement_value 
-            ) 
-    }
+function plotPropertyMarker(marker) {
+  _.each(marker,function(a){
+    a.addTo(map)
   })
+  previousmarkers = currentmarkers
+  return previousmarkers
+  // data.map(function(a) {
+  //   if (Object.keys(a).includes("the_geom")) {
+  //     var customIcon = L.divIcon({className: "propertyPoint"});
+  //     var markerOptions = { icon: customIcon }; 
+  //     return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],
+  //       markerOptions 
+  //       ).addTo(map) .bindPopup(
+  //           "Neighborhood: " + a.assessor_neighborhood +
+  //           "<br>Address: " + a.property_location +
+  //           "<br>Year Built: " + a.year_property_built+
+  //           "<br>Use: " +a.use_definition+
+  //           "<br>Personal Property Value: "+a.assessed_personal_property_value+
+  //           "<br>Land Value: " + a.assessed_land_value +
+  //           "<br>Improvement Value: " +a. assessed_improvement_value 
+  //           ) 
+  //   }
+  // })
 }
 
 
-// var resetMap = function (){
-//   _.each(previousmarkers,function(marker,i){
-//     map.removeLayer(marker);
-//   })
-//   previousmarkers=[];
-// }
+ var resetMap = function (){
+   _.each(previousmarkers,function(marker,i){
+     map.removeLayer(marker);
+   })
+   previousmarkers=[];
+ }
 
 
 
@@ -151,14 +159,18 @@ $.when(
     });
   
     $("#searchButton").on("click", function(e) {
-      // resetMap();
+      resetMap()
       inputValue= $('#searchInput').val()
       filteredProperty = propertyData.filter(a => a.assessor_neighborhood == inputValue)  /*toLowerCase(): cannot read property :toLowerCase" of undefined*/
-      plotPropertyMarker(filteredProperty)
+      currentmarkers = makeMarkers (filteredProperty)
+      // console.log(currentmarkers)
+      plotPropertyMarker(currentmarkers)
+      // console.log(previousmarkers)
+      // plotPropertyMarker(filteredProperty)
       previousmarkers = currentmarkers;
       // console.log(filteredProperty)
       return(inputValue,filteredProperty);  
-    })   
+    })  ;
   })
 
 //   $.when(
