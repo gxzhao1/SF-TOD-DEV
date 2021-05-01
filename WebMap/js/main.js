@@ -222,7 +222,8 @@ $.when(
   
       console.log(currentmarkers)
       /* Write a function to filter the currentmarkers*/
-      pointclassify(currentmarkers,Buffer1);
+      // pointclassify(currentmarkers,Buffer1);  ....function
+      /* test work, function does not work*/
       // var propertyfeature = currentmarkers[1].toGeoJSON();
       // var polygon = Buffer1[2].toGeoJSON();
       // var features = {"type": "FeatureCollection","features": [propertyfeature,polygon]}
@@ -230,6 +231,7 @@ $.when(
       // console.log(turf.inside(propertyfeature,polygon))  /* Inside Work*/
       // var propertyfeature = currentmarkers.map(function(point){return point.toGeoJSON()});
       /*........inside needs freature instead feature collection..... */
+      var propertyfeature = currentmarkers.map(function(a){ return a.toGeoJSON()})
       propertyfeaturecollection = turf.featureCollection(propertyfeature);
       console.log(propertyfeature)
       console.log(propertyfeaturecollection)
