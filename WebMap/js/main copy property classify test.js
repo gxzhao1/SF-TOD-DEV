@@ -20,7 +20,10 @@ var filteredProperty;
 var previousmarkers=[];
 var currentmarkers=[];
 var Buffer1=[];
+// var Buffer1Polygon=[];
 var Buffer2=[];
+// var Buffer2Polygon=[];
+// var propertypoints =[];
 var Buffer1Property;
 var propertyfeaturecollection;
 var Buffer1featurecollection;
@@ -46,28 +49,14 @@ legend.addTo(map);
 
 /*====== Functions ======*/
 
-// function bufferarray (buffer){
-//   for (i=0;i<buffer.length;i++){
-//     Bufferarray[i]=[];
-//     for (j=0;j<buffer[i]._latlngs[0].length;j++){
-//       Bufferarray[i].push([buffer[i]._latlngs[0][j].lat,buffer[i]._latlngs[0][j].lng])
-//     }
-//   }
-//   return Bufferarray
-// }
-
-function pointclassify (marker,buffer){
-  for (i=0;i<marker.length;i++){
-    for (j=0; j< buffer.length;i++){
-      marker[i]=[];
-      buffer[j]=[];
-      var propertyfeature = marker[i].toGeoJSON();
-      var polygon = buffer[j].toGeoJSON();
-      if (turf.inside(propertyfeature,polygon)===true){
-        console.log (marker[i],buffer[j])
-      }
+function bufferarray (buffer){
+  for (i=0;i<buffer.length;i++){
+    Bufferarray[i]=[];
+    for (j=0;j<buffer[i]._latlngs[0].length;j++){
+      Bufferarray[i].push([buffer[i]._latlngs[0][j].lat,buffer[i]._latlngs[0][j].lng])
     }
   }
+  return Bufferarray
 }
 
 
@@ -119,6 +108,16 @@ function plotStationBuffer(buffer) {
   _.each(buffer,function(a){
     a.addTo(map)
   })
+
+  // data.map(function(a) {
+  //   if (a.properties.City == "San Francisco") {
+  //     var stationPoint = turf.point([a.geometry.coordinates[1],a.geometry.coordinates[0]]);
+  //     var stationBuffer1 = turf.buffer(stationPoint, 0.5, "miles");
+  //     var stationBuffer2 = turf.buffer(stationPoint, 1, "miles");
+  //     L.polygon(stationBuffer1.geometry.coordinates, {color: '#977f8c'}).addTo(map);
+  //     L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'}).addTo(map);
+  //   }
+  // })
 }
 
 
@@ -150,6 +149,23 @@ function plotPropertyMarker(marker) {
   })
   previousmarkers = currentmarkers
   return previousmarkers
+  // data.map(function(a) {
+  //   if (Object.keys(a).includes("the_geom")) {
+  //     var customIcon = L.divIcon({className: "propertyPoint"});
+  //     var markerOptions = { icon: customIcon };
+  //     return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],
+  //       markerOptions
+  //       ).addTo(map) .bindPopup(
+  //           "Neighborhood: " + a.assessor_neighborhood +
+  //           "<br>Address: " + a.property_location +
+  //           "<br>Year Built: " + a.year_property_built+
+  //           "<br>Use: " +a.use_definition+
+  //           "<br>Personal Property Value: "+a.assessed_personal_property_value+
+  //           "<br>Land Value: " + a.assessed_land_value +
+  //           "<br>Improvement Value: " +a. assessed_improvement_value
+  //           )
+  //   }
+  // })
 }
 
 
@@ -197,6 +213,8 @@ $.when(
     Buffer2 = Buffer2.filter(function(x){
       return x!==undefined
     })
+    // console.log(Buffer1)
+    // console.log(Buffer2);
     plotStationBuffer(Buffer1);
     plotStationBuffer(Buffer2);
 
@@ -219,22 +237,19 @@ $.when(
       currentmarkers=currentmarkers.filter(function(x){
         return x !== undefined
       })
-  
+      // propertypoints = currentmarkers.map(function(e){return [e._latlng.lat,e._latlng.lng]})
+      // console.log(propertypoints)
+      // getPropertyInBuffer(propertypoints,Buffer1Polygon)
+
       console.log(currentmarkers)
-      /* Write a function to filter the currentmarkers*/
-      pointclassify(currentmarkers,Buffer1);
-      // var propertyfeature = currentmarkers[1].toGeoJSON();
-      // var polygon = Buffer1[2].toGeoJSON();
-      // var features = {"type": "FeatureCollection","features": [propertyfeature,polygon]}
-      // console.log(features)
-      // console.log(turf.inside(propertyfeature,polygon))  /* Inside Work*/
-      // var propertyfeature = currentmarkers.map(function(point){return point.toGeoJSON()});
-      /*........inside needs freature instead feature collection..... */
+      var propertyfeature = currentmarkers.map(function(point){return point.toGeoJSON()});
       propertyfeaturecollection = turf.featureCollection(propertyfeature);
       console.log(propertyfeature)
       console.log(propertyfeaturecollection)
       plotPropertyMarker(currentmarkers)
 
+      // console.log(previousmarkers)
+      // console.log(filteredProperty)
       return(inputValue,filteredProperty,propertyfeaturecollection);
     })  ;
 
@@ -242,6 +257,31 @@ $.when(
 
   })
 
+//   $.when(
+//   $.ajax(stationDataset),
+//   $.ajax(propertyDataset)).then(function(station, property) {
+//   stationData = JSON.parse(station[0]).features;
+//   propertyData = property[0];
+//   console.log(propertyData)
+//   plotStationMarker(stationData);
+//   plotStationBuffer(stationData);
+
+//   $('#sidebarCollapse').on('click', function (e) {
+//     $('#sidebar').toggleClass('active');
+//     $('#map').toggleClass('active');
+//   });
+
+//   $("#searchButton").on("click", function(e) {
+//     inputValue= $('#searchInput').val()
+//     filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == inputValue)
+//     plotPropertyMarker(filteredProperty)
+//     console.log(filteredProperty)
+//     return(inputValue,filteredProperty);
+//   })
+
+
+
+// })
 
 
 
