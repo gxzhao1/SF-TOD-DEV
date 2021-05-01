@@ -192,7 +192,7 @@ $.when(
     Buffer1 = Buffer1.filter(function(x){
       return x!==undefined
     })
-    bufferarray(Buffer1);
+    // bufferarray(Buffer1);
     Buffer2 = makeBuffer2(stationData);
     Buffer2 = Buffer2.filter(function(x){
       return x!==undefined
