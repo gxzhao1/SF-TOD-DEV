@@ -14,10 +14,6 @@ var Stamen_TonerLite = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{
 
 /* Global Vars */
 var stationDataset = "https://raw.githubusercontent.com/gxzhao1/SF-TOD-DEV/main/Data/BART_Station.geojson";
-<<<<<<< Updated upstream
-var propertyDataset = "https://data.sfgov.org/resource/wv5m-vpq2.json?closed_roll_year=2019&property_class_code=D";
-var inputValue;
-=======
 var propertyDataset = "https://data.sfgov.org/resource/wv5m-vpq2.json";
 var inputValue;
 var filteredProperty;
@@ -44,7 +40,6 @@ var customOptions = //for popup
   'className' : 'popupCustom'
   }
 
->>>>>>> Stashed changes
 
 var legend = L.control({ position: "bottomleft" });
 legend.onAdd = function(map) {
@@ -74,13 +69,8 @@ function plotStationMarker(data) {
 
   var markerOptions = { icon: customIcon }; 
 
-<<<<<<< Updated upstream
-  return L.marker([a.geometry.coordinates[1],a.geometry.coordinates[0]],
-      markerOptions 
-=======
   return L.marker([a.geometry.coordinates[1], a.geometry.coordinates[0]],
       markerOptions
->>>>>>> Stashed changes
       ).addTo(map).bindPopup(
           "Name: " + a.properties.Name +
           "<br>Address: " + a.properties.Street +
@@ -88,38 +78,13 @@ function plotStationMarker(data) {
       })
 }
 
-<<<<<<< Updated upstream
-function plotStationBuffer(data) {
-  data.map(function(a) {
-    if (a.properties.City == "San Francisco") {
-      var stationPoint = turf.point([a.geometry.coordinates[1],a.geometry.coordinates[0]]);
-      var stationBuffer1 = turf.buffer(stationPoint, 0.5, "miles");
-      var stationBuffer2 = turf.buffer(stationPoint, 1, "miles");
-      L.polygon(stationBuffer1.geometry.coordinates, {color: '#977f8c'}).addTo(map);
-      L.polygon(stationBuffer2.geometry.coordinates, {color: '#d0bcca'}).addTo(map)
-    }
-  })
-}
-
-function plotPropertyMarker(data) {
-  data.map(function(a) {
-    if (Object.keys(a).includes("the_geom")) {
-      var customIcon = L.divIcon({className: "propertyPoint"});
-      var markerOptions = { icon: customIcon }; 
-      return L.marker([a.the_geom.coordinates[1],a.the_geom.coordinates[0]],
-        markerOptions 
-        ).addTo(map)/* .bindPopup(
-            "Name: " + a.properties.Name +
-            "<br>Address: " + a.properties.Street +
-            "<br>Link: " + a.properties.Link) */
-    }
-=======
 function makeBuffer1 (data){
   return data.map(function(a){
     if(a.properties.City == "San Francisco"){    /* Not Working */
       var stationPoint = turf.point([a.geometry.coordinates[1], a.geometry.coordinates[0]]);
       var stationBuffer1 = turf.buffer(stationPoint, 0.5, {units: 'miles'});
-      return L.polygon(stationBuffer1.geometry.coordinates[0], {color: '#977f8c'})
+      console.log(typeof(stationBuffer1))
+      return L.geoJSON(stationBuffer1.geometry.coordinates[0], {color: '#977f8c'})
     } 
   })
 }
@@ -168,7 +133,6 @@ var makeMarkers = function(data) {
 function plotPropertyMarker(marker) {
   _.each(marker,function(a){
     a.addTo(map)
->>>>>>> Stashed changes
   })
 }
 
@@ -183,24 +147,6 @@ function prepPropPts(data) {
 }
 
 
-<<<<<<< Updated upstream
-/* ===================== Main Process ===================== */
-$.when(
-  $.ajax(stationDataset), 
-  $.ajax(propertyDataset)).then(function(station, property) {
-  stationData = JSON.parse(station[0]).features;
-  propertyData = property[0];
-  console.log(propertyData)
-  plotStationMarker(stationData);
-  plotStationBuffer(stationData);
-/*   I tried plotting with an example - it worked!
-  filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == "russian hill");
-  console.log(filteredProperty)
-  plotPropertyMarker(filteredProperty); */
-
-  
-
-=======
  var resetMap = function (){
    _.each(previousmarkers,function(marker,i){
      map.removeLayer(marker);
@@ -243,22 +189,11 @@ $.when(
   Buffer2featurecollection = turf.featureCollection (Buffer2feature);
 
   //* sidebar interactions *//
->>>>>>> Stashed changes
   $('#sidebarCollapse').on('click', function (e) {
     $('#sidebar').toggleClass('active');
     $('#map').toggleClass('active');
   });
 
-<<<<<<< Updated upstream
-  $("#searchButton").on("click", function(e) {
-    const inputValue = $('#searchInput').val();
-    console.log(inputValue);  /* I could not make inputValue a global variable or plot within this click event! Console log doesn't work but alert() does/ */
-  })  
-
-  /* These don't work yet */
-  filteredProperty = propertyData.filter(a => a.assessor_neighborhood.toLowerCase() == inputValue);
-  plotPropertyMarker(filteredProperty);
-=======
   //* search interactions *//
   $("#searchButton").on("click", function(e) {
     resetMap()
@@ -329,6 +264,5 @@ $.when(
   })  ;
 
 
->>>>>>> Stashed changes
 
 })
