@@ -81,20 +81,22 @@ function plotStationMarker(data) {
 function makeBuffer1 (data){
   return data.map(function(a){
     if(a.properties.City == "San Francisco"){    /* Not Working */
-      var stationPoint = turf.point([a.geometry.coordinates[1], a.geometry.coordinates[0]]);
+      var stationPoint = turf.point([a.geometry.coordinates[0], a.geometry.coordinates[1]]);
       var stationBuffer1 = turf.buffer(stationPoint, 0.5, {units: 'miles'});
-      console.log(typeof(stationBuffer1))
-      return L.geoJSON(stationBuffer1.geometry.coordinates[0], {color: '#977f8c'})
+      console.log("buffer is now a geoJSON", L.geoJSON(stationBuffer1, {color: '#977f8c'}))
+      return L.geoJSON(stationBuffer1, {color: '#977f8c'})
     } 
   })
 }
 
+
+
 function makeBuffer2 (data){
   return data.map(function(a){
     if(a.properties.City == "San Francisco"){
-      var stationPoint = turf.point([a.geometry.coordinates[1],a.geometry.coordinates[0]]);
+      var stationPoint = turf.point([a.geometry.coordinates[0],a.geometry.coordinates[1]]);
       var stationBuffer2 = turf.buffer(stationPoint, 1, {units: 'miles'});
-      return L.polygon(stationBuffer2.geometry.coordinates[0], {color: '#d0bcca'})
+      return L.geoJSON(stationBuffer2, {color: '#d0bcca'})
     }
 
   })
@@ -183,9 +185,9 @@ $.when(
   plotStationBuffer(Buffer1);
   plotStationBuffer(Buffer2);
 
-  var Buffer1feature = Buffer1.map(function(layer){return layer.toGeoJSON()});
+  var Buffer1feature = Buffer1.map(function(layer){return layer}); //deleted to.GeoJSON();
   Buffer1featurecollection = turf.featureCollection(Buffer1feature);
-  var Buffer2feature = Buffer2.map(function(layer){return layer.toGeoJSON()});
+  var Buffer2feature = Buffer2.map(function(layer){return layer});
   Buffer2featurecollection = turf.featureCollection (Buffer2feature);
 
   //* sidebar interactions *//
@@ -221,9 +223,11 @@ $.when(
       plotPropertyMarker(currentmarkers)
       prepPropPts(property);
       var pointFC = turf.featureCollection(ptsArray);
-      console.log("ptsfc", pointFC)
-      var collected = turf.collect(pointFC, Buffer1featurecollection, 'Year Built', 'Value');
-      console.log("collected", collected); // doesn't work right here
+      console.log("ptsfc", pointFC) 
+      console.log("bufferFeatureCollectoin",  Buffer1featurecollection) //Seems right
+      var collected = turf.collect(pointFC, Buffer1featurecollection, 'Year Built', 'Value'); // doesn't work right here with new turf version buffer - getting a TypeError
+      // Here's "turf.collect()" documentation: https://turfjs.org/docs/#collect
+      console.log("collected", collected); // doesn't work right here with old turf version buffer
       var values = collected.features[0].properties.values
       console.log("values", values)
 
