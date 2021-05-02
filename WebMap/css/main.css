@@ -95,7 +95,7 @@ body {
 
 .list-group-item-action.active {
     background-color: #a8dadc;
-    border-color: #a8dadc
+    border-color: #a8dadc;
     color: white;
 }
 
