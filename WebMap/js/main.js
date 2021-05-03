@@ -23,8 +23,8 @@ var Buffer1=[];
 var Buffer2=[];
 var Buffer1Property;
 var propertyfeaturecollection;
-var Buffer1featurecollection;
-var Buffer2featurecollection;
+var Buffer1FC;
+var Buffer2FC;
 var Bufferarray=[];
 var ptsArray=[];
 
@@ -83,9 +83,16 @@ function makeBuffer1 (data){
     if(a.properties.City == "San Francisco"){    /* Not Working */
       var stationPoint = turf.point([a.geometry.coordinates[0], a.geometry.coordinates[1]]);
       var stationBuffer1 = turf.buffer(stationPoint, 0.5, {units: 'miles'});
-      console.log("buffer is now a geoJSON", L.geoJSON(stationBuffer1, {color: '#977f8c'}))
-      return L.geoJSON(stationBuffer1, {color: '#977f8c'})
+      console.log("buffer", stationBuffer1)
+      return stationBuffer1
     } 
+  })
+}
+
+function leafletBuffer1 (bufferFeature) {
+  return bufferFeature.map(function(a){
+  console.log("buffer1 is now a geoJSON", L.geoJSON(a, {color: '#977f8c'}))
+  return L.geoJSON(a, {color: '#977f8c'})
   })
 }
 
@@ -96,9 +103,15 @@ function makeBuffer2 (data){
     if(a.properties.City == "San Francisco"){
       var stationPoint = turf.point([a.geometry.coordinates[0],a.geometry.coordinates[1]]);
       var stationBuffer2 = turf.buffer(stationPoint, 1, {units: 'miles'});
-      return L.geoJSON(stationBuffer2, {color: '#d0bcca'})
+      return stationBuffer2
     }
+  })
+}
 
+function leafletBuffer2 (bufferFeature) {
+  return bufferFeature.map(function(a){
+  console.log("buffer2 is now a geoJSON", L.geoJSON(a, {color: '#d0bcca'}))
+  return L.geoJSON(a, {color: '#d0bcca'})
   })
 }
 
@@ -140,9 +153,9 @@ function plotPropertyMarker(marker) {
 
 function prepPropPts(data) {
   data.map(function(a) {
-    var coords = [a.the_geom.coordinates[1], a.the_geom.coordinates[0]];
+    var coords = [a.the_geom.coordinates[0], a.the_geom.coordinates[1]];
     var yearBuilt = a.year_property_built;
-    var yearBuiltObj =  {"Year Built": yearBuilt};
+    var yearBuiltObj =  {yearBuilt: yearBuilt};
     var pt = turf.point(coords, yearBuiltObj);
     ptsArray.push(pt)
   })
@@ -169,31 +182,32 @@ $.when(
   }),
 ).then(function(station) {
   //* All about stations *//
+  ///* Plot buffer *///
   stationData = JSON.parse(station).features;
   plotStationMarker(stationData);
   Buffer1 = makeBuffer1(stationData);
   Buffer1 = Buffer1.filter(function(x){
     return x!==undefined
   })
-  console.log("Buffer1", Buffer1)
+  Buffer1geojson = leafletBuffer1(Buffer1);
   // bufferarray(Buffer1);
   Buffer2 = makeBuffer2(stationData);
   Buffer2 = Buffer2.filter(function(x){
     return x!==undefined
   })
-  console.log("Buffer2", Buffer2)
-  plotStationBuffer(Buffer1);
-  plotStationBuffer(Buffer2);
-
-  var Buffer1feature = Buffer1.map(function(layer){return layer}); //deleted to.GeoJSON();
-  Buffer1featurecollection = turf.featureCollection(Buffer1feature);
-  var Buffer2feature = Buffer2.map(function(layer){return layer});
-  Buffer2featurecollection = turf.featureCollection (Buffer2feature);
+  Buffer2geojson = leafletBuffer2(Buffer2);
+  plotStationBuffer(Buffer1geojson);
+  plotStationBuffer(Buffer2geojson);
+  
+  ///* Turn buffer into feature collection *///
+  Buffer1FC = turf.featureCollection(Buffer1);
+  Buffer2FC = turf.featureCollection(Buffer2);
 
   //* sidebar interactions *//
   $('#sidebarCollapse').on('click', function (e) {
     $('#sidebar').toggleClass('active');
     $('#map').toggleClass('active');
+    $('#sidebarContent').toggleClass('active');
   });
 
   //* search interactions *//
@@ -203,7 +217,7 @@ $.when(
     neighValue= $('#neighInput').val().replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // this capitalize the first letter of each word
     proptValue= $('#proptInput').val();
     if (neighValue == "") {
-      filteredDataset = propertyDataset + "?" + "closed_roll_year=" + yearValue + "&use_definition=" + proptValue;
+      filteredDataset = propertyDataset + "?" + "closed_roll_year=" + yearValue + "&use_definition=" + proptValue + "&assessor_neighborhood=" + "Financial District North";
     } else {
       filteredDataset = propertyDataset + "?" + "closed_roll_year=" + yearValue + "&use_definition=" + proptValue + "&assessor_neighborhood=" + neighValue;
     }
@@ -217,25 +231,78 @@ $.when(
       }
     }).done(function(property) {
       currentmarkers = makeMarkers(property);
+      console.log(currentmarkers.length)
+      //* Warning + Fly to *//
+      if (currentmarkers.length == 0) {
+        alert("Could not find corresponding value\nPlease try again");
+      } else if (currentmarkers[0]._latlng !== undefined) {
+        map.flyTo(currentmarkers[0]._latlng)
+      }
+      
       console.log(filteredDataset, property)
-      //map.flyTo(currentmarkers[0]._latlng)
-      //map.flyTo(currentmarkers[0])
+
+
       plotPropertyMarker(currentmarkers)
       prepPropPts(property);
+      //* Prepare for chart *// & Here's "turf.collect()" documentation: https://turfjs.org/docs/#collect
       var pointFC = turf.featureCollection(ptsArray);
-      console.log("ptsfc", pointFC) 
-      console.log("bufferFeatureCollectoin",  Buffer1featurecollection) //Seems right
-      var collected = turf.collect(pointFC, Buffer1featurecollection, 'Year Built', 'Value'); // doesn't work right here with new turf version buffer - getting a TypeError
-      // Here's "turf.collect()" documentation: https://turfjs.org/docs/#collect
-      console.log("collected", collected); // doesn't work right here with old turf version buffer
-      var values = collected.features[0].properties.values
-      console.log("values", values)
+      console.log("ptsfc", typeof(pointFC), pointFC)
+      console.log("bufferFeatureCollection1", typeof(Buffer1FC), Buffer1FC)
+      console.log("bufferFeatureCollection2", typeof(Buffer2FC), Buffer2FC)
+      //* yearBuilt *//
+      var yearBuiltc1 = turf.collect(Buffer1FC, pointFC, 'yearBuilt', 'yearBuiltValue');
+      var yearBuiltc2 = turf.collect(Buffer2FC, pointFC, 'yearBuilt', 'yearBuiltValue');
+      
+      console.log("yearBuiltc1", yearBuiltc1);
+      console.log("yearBuiltc2", yearBuiltc2);
+      var values1 = yearBuiltc1.features[7].properties.yearBuiltValue;
+      values1 = values1.filter(function(x){
+        return x!==undefined
+      })
+      var values2 = yearBuiltc2.features[7].properties.yearBuiltValue;
+      values2 = values2.filter(function(x){
+        return x!==undefined
+      })
+      console.log("values for one of the 8 bart stations", values1, values2) //!! Needs to merge all buffers and then "collect" to get the value for all buffers as one
+
+      var buf1Stat = math.mean(values1);
+      var buf2Stat = math.mean(values2);
+
+      ///* CHART *///
+        // bar chart
+        ctxBar = $("#barChart");
+        barChart = new Chart(ctxBar, {
+          type: "bar",
+          data: {
+            labels: ["within 0.5 mile distance", "within 1 mile distance"],
+            datasets: [
+              {
+                label: "Average Built Year of Property",
+                data: [
+                  buf1Stat,
+                  buf2Stat,
+                ],
+                backgroundColor: [
+                  "rgba(250, 225, 221, 1)",
+                  "rgba(250, 225, 221, 1)",
+                ],
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        }); 
 
       //* prepare lookup table *//
       ///*Convert to multipolygon feature *///
-      var polygon = Buffer1[2].toGeoJSON();
+/*       var polygon = Buffer1[2].toGeoJSON();
       console.log(polygon)
-      console.log("points array", ptsArray)
+      console.log("points array", ptsArray) */
 
 
     })

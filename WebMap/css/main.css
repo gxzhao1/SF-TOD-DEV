@@ -199,6 +199,25 @@ body {
     bottom: 0;
 }
 
+#sidebarContent {
+    width: 0px;
+    height: 0px;
+    transition: all 0s;
+    right: 0px;
+    z-index: -10;
+}
+
+#sidebarContent.active {
+    position: absolute;
+    right: 1%;
+    width: 35%;
+    top: 12%;
+    bottom: 0;
+    opacity: 0.99999;
+    z-index: 91;
+    padding-right: 1%;
+}
+
 
 /* old sidebar 
 .sidebar {
