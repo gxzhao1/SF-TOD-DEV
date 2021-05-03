@@ -39,7 +39,7 @@ body {
   
   .navbar-nav {
     position: absolute;
-    right: 8%;
+    right: 78%;
   }
   
   .navbar-light .navbar-nav .nav-link {
@@ -51,12 +51,19 @@ body {
   
   .d-flex{
     position: absolute;
-    right: 20%;
+    right: 5%;
+    width: 60%;
   }
 
   #nav-item{
       position: absolute;
       right: 15%;
+  }
+
+
+  #navbarDropdown{
+    position: relative;
+    left: 45%;
   }
 
   #sidebarCollapse{
@@ -88,7 +95,7 @@ body {
 
 .list-group-item-action.active {
     background-color: #a8dadc;
-    border-color: #a8dadc
+    border-color: #a8dadc;
     color: white;
 }
 
@@ -107,6 +114,12 @@ body {
 
 .propertyPoint {
     background-color: pink
+}
+
+.popupCustom .leaflet-popup-tip,
+.popupCustom .leaflet-popup-content-wrapper {
+    background: pink;
+    color: #234c5e;
 }
 
 /*Legend specific*/
@@ -152,6 +165,7 @@ body {
 
 
 
+
 /* ============= Sidebar ============= */
 .wrapper {
     display: flex;
@@ -183,6 +197,25 @@ body {
     width: 60vw;
     top: 10%;
     bottom: 0;
+}
+
+#sidebarContent {
+    width: 0px;
+    height: 0px;
+    transition: all 0s;
+    right: 0px;
+    z-index: -10;
+}
+
+#sidebarContent.active {
+    position: absolute;
+    right: 1%;
+    width: 35%;
+    top: 12%;
+    bottom: 0;
+    opacity: 0.99999;
+    z-index: 91;
+    padding-right: 1%;
 }
 
 
