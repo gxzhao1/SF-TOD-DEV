@@ -10,45 +10,105 @@
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="./home.html"><span style="color: #3f999a;">Transit Oriented Development</span> in San Francisco</h1>
+    <a class="navbar-brand" href="./home.html"><span style="color: #3f999a;">TOD</span> in San Francisco</h1>
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            About
+          </a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="https://data.sfgov.org/Housing-and-Buildings/Assessor-Historical-Secured-Property-Tax-Rolls/wv5m-vpq2">Source Data</a></li>
+        </ul>
+      </li>
+    </ul>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Map
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="./map2019.html">2019 Map</a></li>
-            <li><a class="dropdown-item" href="./map2015.html">2015 Map</a></li>
-            <li><a class="dropdown-item" href="./map2011.html">2011 Map</a></li>
-            <li><a class="dropdown-item" href="./map2007.html">2007 Map</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="https://data.sfgov.org/Housing-and-Buildings/Assessor-Historical-Secured-Property-Tax-Rolls/wv5m-vpq2">Source Data</a></li>
-          </ul>
-        </li>
-      </ul>
-      <button type="button" id="sidebarCollapse" class="btn btn-info">
+      <button type="button" id="sidebarCollapse" class="btn btn-info" data-bs-toggle="tooltip" data-placement="bottom" title="examine chart" disabled>
         <i class="fas fa-align-left"></i>
         <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
           <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
         </svg></span>
       </button>
       <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Neighborhood" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</i></button>
+        <select class="form-select" id="proptInput"  disabled>
+          <option selected>Commercial Hotel</option>
+          <option value="Multi-Family Residential">Multi-Family Residential</option>
+          <option value="Commercial Hotel">Single Family Residential</option>
+          <option value="Commercial Misc">Commercial Misc</option>
+          <option value="Miscellaneous/Mixed-Use">Miscellaneous/Mixed-Use</option>
+          <option value="Industrial">Industrial</option>
+          <option value="Commercial Office">Commercial Office</option>
+          <option value="Government">Government</option>
+          <option value="(No value)">Others</option>
+        </select>
+        <input class="form-control me-2" placeholder="Financial District North" aria-label="Search" id="neighInput"  disabled>
+        <div class="dropdown">
+          <button class="btn btn-secondary btn-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"  disabled>
+            <span class="year"  disabled>2019</span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="#"><input type="range" class="form-control-range" id="yearRange" min="2007" max="2019" value="2019" step="1" data-bs-toggle="tooltip" data-placement="bottom" ></a></li>
+          </ul>
+        </div>
+        <button type="button" class="btn btn-outline-success" id="searchButton"  disabled><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        </svg></button>
       </form>
     </div>
   </div>
 </nav>
 <!-- content -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">About</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h5>Transit Oriented Development (TOD)</h5>
+        <p>Transit Oriented Development (TOD) has been a trend that promotes more housing and mixed-use amenities near public transportation. While such development can potentially increase efficiency of transit system operation, it can also be beneficial for land value capitalization which would generate more property tax revenue for the city.
+        This application will visually illustrate the impacts for different properties through maps and charts.</p>
+        <h5>About <i>TOD in SF</i></h5>
+        <p><i>TOD in SF</i> is created by two graduate city planning students for a web mapping course at the University of Pennsylvania's Weitzman School of Design.<br><br>
+          <a href="https://gillianzhaoxz.github.io/web/about-gillian/" button type="button" class="btn btn-light" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+          </svg>
+          "Gillian" Xuezhu Zhao</button></a>
+          <a href="https://xy16-5.github.io/" button type="button" class="btn btn-light" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+          </svg>
+          Xinyi Qiu</button></a>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <strong class="me-auto">Greetings</strong>
+    <small class="text-muted">From developers</small>
+<!--     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button> -->
+  </div>
+  <div class="toast-body">
+    <strong>First time here?</strong> Click on "start!" or the triangle button on top learn more.
+  </div>
+</div>
 <div class="textbox">
   <div class="blackcover">
   </div>
   <div class="container">
     <h1>San Francisco TOD Benchmarking</h1>
-    <h2>Discover the social and economic impact of San Francisco's Transit Oriented Developments through this map tool.</h2>
+    <h2>Discover the economic impact of San Francisco's Transit Oriented Developments through this map tool.</h2>
     <div class="interaction">
-      <button class="button" id="button1">Start exploring!</button>
+      <button class="button" id="button1" data-bs-toggle="tooltip" data-placement="bottom" title="click me!">start!</button>
     </div>
   </div>
 </div>
