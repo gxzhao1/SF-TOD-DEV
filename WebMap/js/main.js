@@ -27,6 +27,7 @@ var Buffer1FC;
 var Buffer2FC;
 var Bufferarray=[];
 var ptsArray=[];
+var markerFG;
 
 $("#yearRange").on("click", function(e) { //for year range slider
   year = $('#yearRange').val()
@@ -159,7 +160,7 @@ function prepPropPts(data) {
     var pt = turf.point(coords, yearBuiltObj);
     ptsArray.push(pt)
   })
-}
+}  /* Property*/
 
 
  var resetMap = function (){
@@ -190,7 +191,6 @@ $.when(
     return x!==undefined
   })
   Buffer1geojson = leafletBuffer1(Buffer1);
-  // bufferarray(Buffer1);
   Buffer2 = makeBuffer2(stationData);
   Buffer2 = Buffer2.filter(function(x){
     return x!==undefined
@@ -235,8 +235,10 @@ $.when(
       //* Warning + Fly to *//
       if (currentmarkers.length == 0) {
         alert("Could not find corresponding value\nPlease try again");
-      } else if (currentmarkers[0]._latlng !== undefined) {
-        map.flyTo(currentmarkers[0]._latlng)
+      } else {
+        markerFG = L.featureGroup(currentmarkers);
+        console.log(markerFG)
+        map.flyToBounds(markerFG.getBounds())
       }
       
       console.log(filteredDataset, property)
