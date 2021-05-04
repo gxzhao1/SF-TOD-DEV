@@ -3,3 +3,7 @@ $(document).ready(function() {
         window.location.href="./main.html";
     })
 })
+
+$(document).ready(function(){
+    $('.toast').toast('show');
+  });  
