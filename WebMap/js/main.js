@@ -24,10 +24,16 @@ var Buffer2=[];
 var Buffer1Property;
 var propertyfeaturecollection;
 var Buffer1FC;
+var Buffer1Union;
 var Buffer2FC;
-var Bufferarray=[];
+var Buffer2Union;
+var Bufferarray1=[];
 var ptsArray=[];
 var markerFG;
+var yearvalues1=[];
+var yearvalues2=[];
+
+
 
 $("#yearRange").on("click", function(e) { //for year range slider
   year = $('#yearRange').val()
@@ -57,7 +63,15 @@ legend.onAdd = function(map) {
 legend.addTo(map); 
 
 /*====== Functions ======*/
-
+function bufferarray (buffer){
+  for (i=0;i<buffer.length;i++){
+    Bufferarray1[i]=[];
+    for (j=0;j<buffer[i].geometry.coordinates[0].length;j++){
+      Bufferarray1[i].push([buffer[i].geometry.coordinates[0][j][0],buffer[i].geometry.coordinates[0][j][1]])
+    }
+  }
+  return Bufferarray1
+}
 
 /*=== Map Functions ===*/
 function plotStationMarker(data) {
@@ -150,14 +164,19 @@ function plotPropertyMarker(marker) {
   _.each(marker,function(a){
     a.addTo(map)
   })
+  previousmarkers = currentmarkers
+  return previousmarkers
 }
 
 function prepPropPts(data) {
   data.map(function(a) {
     var coords = [a.the_geom.coordinates[0], a.the_geom.coordinates[1]];
     var yearBuilt = a.year_property_built;
-    var yearBuiltObj =  {yearBuilt: yearBuilt};
-    var pt = turf.point(coords, yearBuiltObj);
+    var PPV = a.assessed_personal_property_value;
+    var LV = a.assessed_land_value;
+    var IV = a.assessed_improvement_value;
+    var PropertyObj =  {yearBuilt: yearBuilt,Personal_Property_Value: PPV, Land_Value: LV, Improvement_Value: IV};
+    var pt = turf.point(coords, PropertyObj);
     ptsArray.push(pt)
   })
 }  /* Property*/
@@ -190,6 +209,18 @@ $.when(
   Buffer1 = Buffer1.filter(function(x){
     return x!==undefined
   })
+  // Bufferarray1 = bufferarray(Buffer1);
+  // var buffer1polygon1 = turf.polygon([Bufferarray1[0]]);
+  // var buffer1polygon2 = turf.polygon([Bufferarray1[1]]);
+  // var buffer1polygon3 = turf.polygon([Bufferarray1[2]]);
+  // var buffer1polygon4 = turf.polygon([Bufferarray1[3]]);
+  // var buffer1polygon5 = turf.polygon([Bufferarray1[4]]);
+  // var buffer1polygon6 = turf.polygon([Bufferarray1[5]]);
+  // var buffer1polygon7 = turf.polygon([Bufferarray1[6]]);
+  // var buffer1polygon8 = turf.polygon([Bufferarray1[7]]);
+  // Buffer1Union = turf.union(buffer1polygon1,buffer1polygon2,buffer1polygon3,buffer1polygon4,buffer1polygon5,buffer1polygon6,buffer1polygon7,buffer1polygon8);
+  // console.log("Buffer1Union",Buffer1Union)
+
   Buffer1geojson = leafletBuffer1(Buffer1);
   Buffer2 = makeBuffer2(stationData);
   Buffer2 = Buffer2.filter(function(x){
@@ -202,6 +233,10 @@ $.when(
   ///* Turn buffer into feature collection *///
   Buffer1FC = turf.featureCollection(Buffer1);
   Buffer2FC = turf.featureCollection(Buffer2);
+  // Buffer1Union = turf.union(Buffer1);
+  // Buffer2Union = turf.union(Buffer2);
+  // console.log("Buffer1Union",Buffer1Union)
+  // console.log("Buffer2Union",Buffer2Union)
 
   //* sidebar interactions *//
   $('#sidebarCollapse').on('click', function (e) {
@@ -254,21 +289,58 @@ $.when(
       //* yearBuilt *//
       var yearBuiltc1 = turf.collect(Buffer1FC, pointFC, 'yearBuilt', 'yearBuiltValue');
       var yearBuiltc2 = turf.collect(Buffer2FC, pointFC, 'yearBuilt', 'yearBuiltValue');
-      
       console.log("yearBuiltc1", yearBuiltc1);
       console.log("yearBuiltc2", yearBuiltc2);
-      var values1 = yearBuiltc1.features[7].properties.yearBuiltValue;
+      for (i=0;i<yearBuiltc1.features.length;i++){
+        if(yearBuiltc1.features[i].properties.yearBuiltValue.length!==0){
+          for(j=0;j<yearBuiltc1.features[i].properties.yearBuiltValue.length;j++){
+            yearvalues1.push(yearBuiltc1.features[i].properties.yearBuiltValue[j]) 
+          }
+        }
+      }
+      var values1 = yearvalues1;
       values1 = values1.filter(function(x){
         return x!==undefined
       })
-      var values2 = yearBuiltc2.features[7].properties.yearBuiltValue;
+      for (i=0;i<values1.length;i++){
+        values1[i] = Number(values1[i]);
+      }
+      for (i=0;i<yearBuiltc2.features.length;i++){
+        if(yearBuiltc2.features[i].properties.yearBuiltValue.length!==0){
+          for(j=0;j<yearBuiltc2.features[i].properties.yearBuiltValue.length;j++){
+            yearvalues2.push(yearBuiltc2.features[i].properties.yearBuiltValue[j]) 
+          }
+        }
+      }
+      var values2 = yearvalues2;
       values2 = values2.filter(function(x){
         return x!==undefined
       })
+      for (i=0;i<values2.length;i++){
+        values2[i] = Number(values2[i]);
+      }
       console.log("values for one of the 8 bart stations", values1, values2) //!! Needs to merge all buffers and then "collect" to get the value for all buffers as one
 
-      var buf1Stat = math.mean(values1);
-      var buf2Stat = math.mean(values2);
+      if (values1.length===0){
+        var buf1Stat = 0;
+      } else {
+        var buf1Stat = math.round(math.mean(values1));
+      }
+
+      if(values2.length === 0){
+        var buf2Stat = 0;
+      }else{
+        var buf2Stat = math.round(math.mean(values2));
+
+      }
+
+      if(values1.length===0 & values2.length===0){
+        alert("There is no property in TOD!")
+      }
+
+      
+      
+       //* personal Property Value *//
 
       ///* CHART *///
         // bar chart
