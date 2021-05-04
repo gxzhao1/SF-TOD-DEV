@@ -32,6 +32,8 @@ var ptsArray=[];
 var markerFG;
 var yearvalues1=[];
 var yearvalues2=[];
+var PPVvalues1 = [];
+var PPVvalues2 = [];
 
 
 
@@ -340,7 +342,55 @@ $.when(
 
       
       
-       //* personal Property Value *//
+      //* personal Property Value *//
+      var PPVc1 = turf.collect(Buffer1FC, pointFC, 'Personal_Property_Value', 'Personal_Property_Value');
+      var PPVc2 = turf.collect(Buffer2FC, pointFC, 'Personal_Property_Value', 'Personal_Property_Value');
+      console.log("PPVc1", PPVc1);
+      console.log("PPVc2", PPVc2);
+      for (i=0;i<PPVc1.features.length;i++){
+        if(PPVc1.features[i].properties.Personal_Property_Value.length!==0){
+          for(j=0;j<PPVc1.features[i].properties.Personal_Property_Value.length;j++){
+            PPVvalues1.push(PPVc1.features[i].properties.Personal_Property_Value[j]) 
+          }
+        }
+      }
+      var ppvvalues1 = PPVvalues1.filter(function(x){
+        return x!==undefined
+      })
+      for (i=0;i<ppvvalues1.length;i++){
+        ppvvalues1[i] = Number(ppvvalues1[i]);
+      }
+      for (i=0;i<PPVc2.features.length;i++){
+        if(PPVc2.features[i].properties.Personal_Property_Value.length!==0){
+          for(j=0;j<PPVc2.features[i].properties.Personal_Property_Value.length;j++){
+            PPVvalues2.push(PPVc2.features[i].properties.Personal_Property_Value[j]) 
+          }
+        }
+      }
+      var ppvvalues2 = PPVvalues2.filter(function(x){
+        return x!==undefined
+      })
+      for (i=0;i<ppvvalues2.length;i++){
+        ppvvalues2[i] = Number(PPVvalues2[i]);
+      }
+      console.log("values for one of the 8 bart stations", ppvvalues1, ppvvalues2) 
+
+      if (ppvvalues1.length===0){
+        var buf1Stat2 = 0;
+      } else {
+        var buf1Stat2 = math.round(math.mean(ppvvalues1));
+      }
+
+      if(ppvvalues2.length === 0){
+        var buf2Stat2 = 0;
+      }else{
+        var buf2Stat2= math.round(math.mean(ppvvalues2));
+
+      }
+
+      // if(values1.length===0 & values2.length===0){
+      //   alert("There is no property in TOD!")
+      // }
 
       ///* CHART *///
         // bar chart
@@ -355,6 +405,33 @@ $.when(
                 data: [
                   buf1Stat,
                   buf2Stat,
+                ],
+                backgroundColor: [
+                  "rgba(250, 225, 221, 1)",
+                  "rgba(250, 225, 221, 1)",
+                ],
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        }); 
+        ctxBar2 = $("#barChart2");
+        barChart2 = new Chart(ctxBar2, {
+          type: "bar",
+          data: {
+            labels: ["within 0.5 mile distance", "within 1 mile distance"],
+            datasets: [
+              {
+                label: "Average Personal Property Value",
+                data: [
+                  buf1Stat2,
+                  buf2Stat2,
                 ],
                 backgroundColor: [
                   "rgba(250, 225, 221, 1)",
