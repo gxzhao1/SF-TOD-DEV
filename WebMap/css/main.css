@@ -118,7 +118,7 @@ body {
 
 .popupCustom .leaflet-popup-tip,
 .popupCustom .leaflet-popup-content-wrapper {
-    background: pink;
+    background: white;
     color: #234c5e;
 }
 
@@ -217,6 +217,9 @@ body {
     z-index: 91;
     padding-right: 1%;
 }
+
+
+
 
 
 /* old sidebar 
