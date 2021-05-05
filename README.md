@@ -1,12 +1,15 @@
 # SF-TOD-DEV
 Repo for CPLN692 final project
 ----
-![WelcomeScreen](https://github.com/gxzhao1/SF-TOD-DEV/blob/639227c4ad3acb8c2147eb41a9c86198c4641b14/Screens/WelcomeScreen.PNG)
+![WelcomeScreen](Screens/WelcomeScreen.PNG)
+
 ## Website Functionalities:
 * Purpose & Goal
-    * Users could obtain the properties' details including built year, location, values, etc., 
-    * Users could know about the impact of TOD on property values by different properties' usages, neighborhoods and years
+    * Users could learn about the properties' details including built year, location, values, etc;
+    * Users could examine the impact of TOD on property values for different properties types, neighborhoods, and tax-roll closed years;
 * Functionalities
-    * In-site search: the website can fetch the property data from San Francisco Goverment using API based on users' inputs
-    * Location map: the website can zoom into the properties' locations that users are searching and show the details when users click the property.
-    * Comparison chart: the website can show four comparison bar charts about built year, persona property value, land value and improvement value in the collapsed sidebar. With the charts and annotated texts, users could know about the impact of TOD easily.
+    * In-site search: based on user input, the website can fetch data from San Francisco Goverment using API;
+    * Property information map: based on user input, the website can zoom into properties' locations and show the property information when user click on a property.
+    * BART station location map: users can see BART station information when clicking on a station marker.
+    * Comparison chart: On the collapsible sidebar, the website shows four comparison bar charts comparing property information between different TOD buffers. These includes: built year, personal property value, land value, and improvement value. Along with the charts and annotated texts, they help illustrate the impact of TOD.
+    * ![WelcomeScreen](Screens/SearchResult.PNG)
