@@ -24,9 +24,7 @@ var Buffer2=[];
 var Buffer1Property;
 var propertyfeaturecollection;
 var Buffer1FC;
-var Buffer1Union;
 var Buffer2FC;
-var Buffer2Union;
 var Bufferarray1=[];
 var ptsArray=[];
 var markerFG;
@@ -74,6 +72,34 @@ function bufferarray (buffer){
   }
   return Bufferarray1
 }
+
+var resetCanvas1 = function(){
+  $('#barChart').remove(); // this is my <canvas> element
+  $('#sidebarContent').append('<canvas id="barChart"><canvas>');
+  canvas = document.querySelector('#barChart');
+  ctx = canvas.getContext('2d');
+  ctx.canvas.width = $('#sidebarContent').width(); // resize to parent width
+  ctx.canvas.height = $('#sidebarContent').height(); // resize to parent height
+  var x = canvas.width/2;
+  var y = canvas.height/2;
+  ctx.font = '10pt Verdana';
+  ctx.textAlign = 'center';
+  ctx.fillText('This text is centered on the canvas', x, y);
+};
+
+var resetCanvas2 = function(){
+  $('#barChart2').remove(); // this is my <canvas> element
+  $('#sidebarContent').append('<canvas id="barChart2"><canvas>');
+  canvas = document.querySelector('#barChart2');
+  ctx = canvas.getContext('2d');
+  ctx.canvas.width = $('#sidebarContent').width(); // resize to parent width
+  ctx.canvas.height = $('#sidebarContent').height(); // resize to parent height
+  var x = canvas.width/2;
+  var y = canvas.height/2;
+  ctx.font = '10pt Verdana';
+  ctx.textAlign = 'center';
+  ctx.fillText('This text is centered on the canvas', x, y);
+};
 
 /*=== Map Functions ===*/
 function plotStationMarker(data) {
@@ -250,6 +276,13 @@ $.when(
   //* search interactions *//
   $("#searchButton").on("click", function(e) {
     resetMap()
+    resetCanvas1();
+    resetCanvas2();
+    ptsArray=[];
+    yearvalues1=[];
+    yearvalues2=[];
+    PPVvalues1 = [];
+    PPVvalues2 = [];
     yearValue= $('#yearRange').val();
     neighValue= $('#neighInput').val().replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // this capitalize the first letter of each word
     proptValue= $('#proptInput').val();
@@ -421,6 +454,7 @@ $.when(
             },
           },
         }); 
+        // barChart.destroy();
         ctxBar2 = $("#barChart2");
         barChart2 = new Chart(ctxBar2, {
           type: "bar",
