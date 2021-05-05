@@ -128,29 +128,29 @@ var removetext = function(){
 }
 var recovertext = function(){
   $("#sidebarContent").append('<UL id="sidebarText" type= "disc" style="width: 100%"></UL>')
-  $('#sidebarText').append('<LI class="YearText"></LI>');
-  $('#sidebarText').append('<LI class="PersonalValueText"></LI>');
-  $('#sidebarText').append('<LI class="LandValueText"></LI>');
-  $('#sidebarText').append('<LI class="ImprovementValueText"></LI>');
+  $('#sidebarText').append(' <LI class="YearText">Built Year: <span class="maxyearbuilt"></span> >(=) <span class="middleyearbuilt"></span> >(=) <span class="minyearbuilt"></span> </LI>');
+  $('#sidebarText').append('<LI class="PersonalValueText">Personal Property Value: <span class="maxppv"></span> >(=) <span class="middleppv"></span> >(=) <span class="minppv"></span></LI>');
+  $('#sidebarText').append('<LI class="LandValueText">Land Value: <span class="maxlv"></span> >(=) <span class="middlelv"></span> >(=) <span class="minlv"></span></LI>');
+  $('#sidebarText').append('<LI class="ImprovementValueText">Improvement Value: <span class="maxiv"></span> >(=) <span class="middleiv"></span> >(=) <span class="miniv"></span></LI>');
 }
 var resettext1 = function(){
   $('.YearText').remove(); // this is my <canvas> element
-  $('#sidebarText').append('<LI class="YearText"></LI>');
+  $('#sidebarText').append(' <LI class="YearText">Built Year: <span class="maxyearbuilt"></span> >(=) <span class="middleyearbuilt"></span> >(=) <span class="minyearbuilt"></span> </LI>');
 };
 
 var resettext2 = function(){
   $('.PersonalValueText').remove(); // this is my <canvas> element
-  $('#sidebarText').append('<LI class="PersonalValueText"></LI>');
+  $('#sidebarText').append('<LI class="PersonalValueText">Personal Property Value: <span class="maxppv"></span> >(=) <span class="middleppv"></span> >(=) <span class="minppv"></span></LI>');
 };
 
 var resettext3 = function(){
   $('.LandValueText').remove(); // this is my <canvas> element
-  $('#sidebarText').append('<LI class="LandValueText"></LI>');
+  $('#sidebarText').append('<LI class="LandValueText">Land Value: <span class="maxlv"></span> >(=) <span class="middlelv"></span> >(=) <span class="minlv"></span></LI>');
 };
 
 var resettext4 = function(){
   $('.ImprovementValueText').remove(); // this is my <canvas> element
-  $('#sidebarText').append('<LI class="ImprovementValueText"></LI>');
+  $('#sidebarText').append('<LI class="ImprovementValueText">Improvement Value: <span class="maxiv"></span> >(=) <span class="middleiv"></span> >(=) <span class="miniv"></span></LI>');
 };
 
 
@@ -476,18 +476,43 @@ $.when(
       }
       ///* Text Generate *///
 
-      if(values1.length===0 & values2.length===0){
-        alert("There is no property in TOD!")
+      if(values1.length===0 & values2.length===0 & values3.length===0){
         $('.YearText').text('')
       }
-      else if (values1.length!==0 & values2.length!==0){
-        if (buf1Stat >buf2Stat){
-          $('.YearText').text('Properties within 0.5 mile buffer is newer than properties within 1 mile buffer')
-        }else if (buf1Stat < buf2Stat){
-          $('.YearText').text('Properties within 0.5 mile buffer is elder than properties within 1 mile buffer')
-        }else if ( buf1Stat === buf2Stat){
-          $('.YearText').text('Properties Built Year within 0.5 mile buffer equals to properties within 1 mile buffer')
+      else if (values1.length!==0 || values2.length!==0 || values3.length!==0){
+        var valuearray = [buf1Stat,buf2Stat,buf3Stat];
+        var maxvalue = math.max(...valuearray);
+        var minvalue = math.min(...valuearray);
+        if (buf1Stat ===maxvalue){
+          $('.maxyearbuilt').text('0.5 mile buffer');
+          if (buf2Stat === minvalue){
+            $('.minyearbuilt').text('1 mile buffer');
+            $('.middleyearbuilt').text('2 miles buffer');
+          }else {
+            $('.minyearbuilt').text('2 miles buffer');
+            $('.middleyearbuilt').text('1 mile buffer');
+          }
+        }else if (buf2Stat ===maxvalue){
+          $('.maxyearbuilt').text('1 mile buffer');
+          if(buf1Stat === minvalue){
+            $('.minyearbuilt').text('0.5 mile buffer');
+            $('.middleyearbuilt').text('2 miles buffer');
+          }else {
+            $('.minyearbuilt').text('2 miles buffer');
+            $('.middleyearbuilt').text('0.5 mile buffer');
+          }
+        }else if (buf3Stat ===maxvalue){
+          $('.maxyearbuilt').text('2 miles buffer');
+          if (buf1Stat === minvalue){
+            $('.minyearbuilt').text('0.5 mile buffer');
+            $('.middleyearbuilt').text('1 miles buffer');
+          }else {
+            $('.minyearbuilt').text('1 mile buffer');
+            $('.middleyearbuilt').text('0.5 miles buffer');
+          }
         }
+
+        
       }
 
       
@@ -567,17 +592,43 @@ $.when(
 
       ///* text generate*///
 
-      if(ppvvalues1.length===0 & ppvvalues2.length===0){
+      if(ppvvalues1.length===0 & ppvvalues2.length===0 & ppvvalues3.length===0){
         $('.PersonalValueText').text('')
       }
-      else if (ppvvalues1.length!==0 & ppvvalues2.length!==0){
-        if (buf1Stat2 >buf2Stat2){
-          $('.PersonalValueText').text('Properties within 0.5 mile buffer have more personal property value than properties within 1 mile buffer')
-        }else if (buf1Stat2 < buf2Stat2){
-          $('.PersonalValueText').text('Properties within 0.5 mile buffer have less personal property value than properties within 1 mile buffer')
-        }else if ( buf1Stat2 === buf2Stat2){
-          $('.PersonalValueText').text('Properties personal property value within 0.5 mile buffer equals to properties within 1 mile buffer')
+      else if (ppvvalues1.length!==0 || ppvvalues2.length!==0 || ppvvalues3.length!==0){
+        var valuearray = [buf1Stat2,buf2Stat2,buf3Stat2];
+        var maxvalue = math.max(...valuearray);
+        var minvalue = math.min(...valuearray);
+        if (buf1Stat2 ===maxvalue){
+          $('.maxppv').text('0.5 mile buffer');
+          if (buf2Stat2 === minvalue){
+            $('.minppv').text('1 mile buffer');
+            $('.middleppv').text('2 miles buffer');
+          }else {
+            $('.minppv').text('2 miles buffer');
+            $('.middleppv').text('1 mile buffer');
+          }
+        }else if (buf2Stat2 ===maxvalue){
+          $('.maxppv').text('1 mile buffer');
+          if(buf1Stat2 === minvalue){
+            $('.minppv').text('0.5 mile buffer');
+            $('.middleppv').text('2 miles buffer');
+          }else {
+            $('.minppv').text('2 miles buffer');
+            $('.middleppv').text('0.5 mile buffer');
+          }
+        }else if (buf3Stat2 ===maxvalue){
+          $('.maxppv').text('2 miles buffer');
+          if (buf1Stat2 === minvalue){
+            $('.minppv').text('0.5 mile buffer');
+            $('.middleppv').text('1 miles buffer');
+          }else {
+            $('.minppv').text('1 mile buffer');
+            $('.middleppv').text('0.5 miles buffer');
+          }
         }
+
+        
       }
 
       //* Land Value *//
@@ -653,18 +704,45 @@ $.when(
 
       ///* text generate *///
 
-      if(lvvalues1.length===0 & lvvalues2.length===0){
+      if(lvvalues1.length===0 & lvvalues2.length===0 & lvvalues3.length===0){
         $('.LandValueText').text('')
       }
-      else if (lvvalues1.length!==0 & lvvalues2.length!==0){
-        if (buf1Stat3 >buf2Stat3){
-          $('.LandValueText').text('Properties within 0.5 mile buffer have more land value than properties within 1 mile buffer')
-        }else if (buf1Stat3 < buf2Stat3){
-          $('.LandValueText').text('Properties within 0.5 mile buffer have less land value than properties within 1 mile buffer')
-        }else if ( buf1Stat3 === buf2Stat3){
-          $('.LandValueText').text('Properties land value within 0.5 mile buffer equals to properties within 1 mile buffer')
+      else if (lvvalues1.length!==0 || lvvalues2.length!==0 || lvvalues3.length!==0){
+        var valuearray = [buf1Stat3,buf2Stat3,buf3Stat3];
+        var maxvalue = math.max(...valuearray);
+        var minvalue = math.min(...valuearray);
+        if (buf1Stat3 ===maxvalue){
+          $('.maxlv').text('0.5 mile buffer');
+          if (buf2Stat3 === minvalue){
+            $('.minlv').text('1 mile buffer');
+            $('.middlelv').text('2 miles buffer');
+          }else {
+            $('.minlv').text('2 miles buffer');
+            $('.middlelv').text('1 mile buffer');
+          }
+        }else if (buf2Stat3 ===maxvalue){
+          $('.maxlv').text('1 mile buffer');
+          if(buf1Stat3 === minvalue){
+            $('.minlv').text('0.5 mile buffer');
+            $('.middlelv').text('2 miles buffer');
+          }else {
+            $('.minlv').text('2 miles buffer');
+            $('.middlelv').text('0.5 mile buffer');
+          }
+        }else if (buf3Stat3 ===maxvalue){
+          $('.maxlv').text('2 miles buffer');
+          if (buf1Stat3 === minvalue){
+            $('.minlv').text('0.5 mile buffer');
+            $('.middlelv').text('1 miles buffer');
+          }else {
+            $('.minlv').text('1 mile buffer');
+            $('.middlelv').text('0.5 miles buffer');
+          }
         }
+
+        
       }
+
 
       //* Improvement Value *//
       var IVc1 = turf.collect(Buffer1FC, pointFC, 'Improvement_Value', 'Improvement_Value');
@@ -740,17 +818,44 @@ $.when(
 
       ///*text generate*///
 
-      if(ivvalues1.length===0 & ivvalues2.length===0){
+   
+      if(ivvalues1.length===0 & ivvalues2.length===0 & ivvalues3.length===0){
         $('.ImprovementValueText').text('')
       }
-      else if (ivvalues1.length!==0 & ivvalues2.length!==0){
-        if (buf1Stat4 >buf2Stat4){
-          $('.ImprovementValueText').text('Properties within 0.5 mile buffer have more improvement value than properties within 1 mile buffer')
-        }else if (buf1Stat4 < buf2Stat4){
-          $('.ImprovementValueText').text('Properties within 0.5 mile buffer have less improvement value than properties within 1 mile buffer')
-        }else if ( buf1Stat4 === buf2Stat4){
-          $('.ImprovementValueText').text('Properties improvement value within 0.5 mile buffer equals to properties within 1 mile buffer')
+      else if (ivvalues1.length!==0 || ivvalues2.length!==0 || ivvalues3.length!==0){
+        var valuearray = [buf1Stat4,buf2Stat4,buf3Stat4];
+        var maxvalue = math.max(...valuearray);
+        var minvalue = math.min(...valuearray);
+        if (buf1Stat4 ===maxvalue){
+          $('.maxiv').text('0.5 mile buffer');
+          if (buf2Stat3 === minvalue){
+            $('.miniv').text('1 mile buffer');
+            $('.middleiv').text('2 miles buffer');
+          }else {
+            $('.miniv').text('2 miles buffer');
+            $('.middleiv').text('1 mile buffer');
+          }
+        }else if (buf2Stat4 ===maxvalue){
+          $('.maxiv').text('1 mile buffer');
+          if(buf1Stat4 === minvalue){
+            $('.miniv').text('0.5 mile buffer');
+            $('.middleiv').text('2 miles buffer');
+          }else {
+            $('.miniv').text('2 miles buffer');
+            $('.middleiv').text('0.5 mile buffer');
+          }
+        }else if (buf3Stat4 ===maxvalue){
+          $('.maxiv').text('2 miles buffer');
+          if (buf1Stat4 === minvalue){
+            $('.miniv').text('0.5 mile buffer');
+            $('.middleiv').text('1 miles buffer');
+          }else {
+            $('.miniv').text('1 mile buffer');
+            $('.middleiv').text('0.5 miles buffer');
+          }
         }
+
+        
       }
 
 
