@@ -177,10 +177,11 @@ body {
     min-width: 40vw;
     max-width: 40vw;
     background-color: #DADADA;
-    opacity: 0.8;
+    opacity: 0.9;
     transition: all 0.3s;
     right: 0px;
     z-index: 90;
+    height: 100%;
 }
 
 #sidebar.active {
@@ -222,97 +223,6 @@ body {
     font-size:12px;
     font-family: 'Helvetica', 'Arial', sans-serif;
 }
-
-
-
-
-
-
-/* old sidebar 
-.sidebar {
-    position: absolute;
-    right: 0px;
-    width: 540px;
-    top: 10%;
-    bottom: 0;
-    overflow-y: auto;
-    background-color: white;
-    opacity: 0.8;
-}
-
-.item {
-    margin: 5px;
-    background-color: #e8e8e4;
-    padding:5px;
-}
-
-.item:not(:last-child) {
-    margin-bottom: 10px;
-}
-
-.item-heading {
-    font-size: 18px;
-    margin-top: 0;
-    font-weight: bold;
-}
-
-.sort {
-    position: fixed;
-    bottom: 0;
-
-    width: 340px;
-    background-color: #fff;
-    padding: 5px;
-}
-
-.sort-option {
-    margin-left: 10px;
-}
-
-.sort-option.selected {
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-}
-
-
-.sidebar .nav.navbar-default {
-    border: 0;
-    border-radius: 0;
-    border-bottom: 1px solid #eee;
-} 
-
-.col-4 {
-    background-color: #1d3557;
-    padding-bottom: 100%; 
-    margin-bottom: -100%;
-}
-
-.col-8 {
-    background-color: white;
-    padding-bottom: 100%; 
-    margin-bottom: -100%;
-}
-
-.dropdown-menu {
-    text-align: left;
-}
-
-#floatingInput {
-    height: auto;
-}
-
-#sales {
-    font-size: 100px;
-    color: #457b9d;
-}
-
-#dropdownMenuButton1 {
-    background-color: #457b9d;
-    border-color: #457b9d;
-}
-
-*/
-  
 
 
 /* =============

@@ -322,10 +322,10 @@ $.when(
   })
   Buffer3geojson = leafletBuffer3(Buffer3);
 
-  plotStationBuffer(Buffer1geojson);
-  plotStationBuffer(Buffer2geojson);
   plotStationBuffer(Buffer3geojson);
-  
+  plotStationBuffer(Buffer2geojson);
+  plotStationBuffer(Buffer1geojson);
+
   ///* Turn buffer into feature collection *///
   Buffer1FC = turf.featureCollection(Buffer1);
   Buffer2FC = turf.featureCollection(Buffer2);
@@ -339,10 +339,11 @@ $.when(
     $('#sidebarContent').toggleClass('active');
   });
 
-  //* search interactions *//
-
-   
+  //* search interactions *//   
   $("#searchButton").on("click", function(e) {
+    $('#sidebar').toggleClass('active', true);
+    $('#map').toggleClass('active', true);
+    $('#sidebarContent').toggleClass('active', true);
     resetMap()
     resetCanvas1();
     resetCanvas2();
