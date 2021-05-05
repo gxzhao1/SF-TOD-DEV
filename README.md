@@ -1,7 +1,7 @@
 # SF-TOD-DEV
 Repo for CPLN692 final project
 ----
-[WelcomeScreen](https://github.com/gxzhao1/SF-TOD-DEV/blob/639227c4ad3acb8c2147eb41a9c86198c4641b14/Screens/WelcomeScreen.PNG)
+![WelcomeScreen](https://github.com/gxzhao1/SF-TOD-DEV/blob/639227c4ad3acb8c2147eb41a9c86198c4641b14/Screens/WelcomeScreen.PNG)
 ## Website Functionalities:
 * Purpose & Goal
     * Users could obtain the properties' details including built year, location, values, etc., 
