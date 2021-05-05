@@ -12,4 +12,13 @@ Repo for CPLN692 final project
     * Property information map: based on user input, the website can zoom into properties' locations and show the property information when user click on a property.
     * BART station location map: users can see BART station information when clicking on a station marker.
     * Comparison chart: On the collapsible sidebar, the website shows four comparison bar charts comparing property information between different TOD buffers. These includes: built year, personal property value, land value, and improvement value. Along with the charts and annotated texts, they help illustrate the impact of TOD.
-    * ![WelcomeScreen](Screens/SearchResult.PNG)
+
+## Interaction Instructions:
+On homescreen, click on "start!" to enter the map application. The map shows BART stations that you can click on. The little triangle will take you to source data - property tax rolls.
+![MapViewScreen](Screens/MapView.PNG)
+
+![SearchOption-YearScreen](Screens/SearchOption-Year.PNG)
+
+![SearchOption-YearScreen](Screens/SearchOption-Type.PNG)
+
+![MapViewScreen](Screens/SearchResult.PNG)
