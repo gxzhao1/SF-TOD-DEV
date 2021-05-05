@@ -16,9 +16,12 @@ Repo for CPLN692 final project
 ## Interaction Instructions:
 On homescreen, click on "start!" to enter the map application. The map shows BART stations that you can click on. The little triangle will take you to source data - property tax rolls.
 ![MapViewScreen](Screens/MapView.PNG)
+
 To switch years, click on the year and click on the range slider.
 ![SearchOption-YearScreen](Screens/SearchOption-Year.PNG)
+
 To change property type, click on the input box (default to Commercial Hotel) and select from the dropdown menu.
 ![SearchOption-YearScreen](Screens/SearchOption-Type.PNG)
+
 Finally, type in the neighborhood of interest and hit the search icon to view result!
 ![MapViewScreen](Screens/SearchResult.PNG)
