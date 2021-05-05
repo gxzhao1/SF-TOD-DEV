@@ -21,18 +21,24 @@ var previousmarkers=[];
 var currentmarkers=[];
 var Buffer1=[];
 var Buffer2=[];
+var Buffer3 = [];
 var Buffer1FC;
 var Buffer2FC;
+var Buffer3FC;
 var ptsArray=[];
 var markerFG;
 var yearvalues1=[];
 var yearvalues2=[];
+var yearvalues3=[];
 var PPVvalues1 = [];
 var PPVvalues2 = [];
+var PPVvalues3 = [];
 var LVvalues1 = [];
 var LVvalues2 = [];
+var LVvalues3 = [];
 var IVvalues1 = [];
 var IVvalues2 = [];
+var IVvalues3 = [];
 
 
 
@@ -58,6 +64,7 @@ legend.onAdd = function(map) {
     div.innerHTML += '<i style="background: pink"></i><span>Property points</span><br>';
     div.innerHTML += '<i style="background: #977f8c"></i><span>0.5 mile buffer</span><br>';
     div.innerHTML += '<i style="background: #d0bcca"></i><span>1 mile buffer</span><br>';
+    div.innerHTML += '<i style="background: #E6DBE2"></i><span>2 mile buffer</span><br>';
 
     return div;
 };
@@ -116,6 +123,36 @@ var resetCanvas4 = function(){
   ctx.font = '10pt Verdana';
   ctx.textAlign = 'center';
 };
+var removetext = function(){
+  $("#sidebarText").remove()
+}
+var recovertext = function(){
+  $("#sidebarContent").append('<UL id="sidebarText" type= "disc" style="width: 100%"></UL>')
+  $('#sidebarText').append('<LI class="YearText"></LI>');
+  $('#sidebarText').append('<LI class="PersonalValueText"></LI>');
+  $('#sidebarText').append('<LI class="LandValueText"></LI>');
+  $('#sidebarText').append('<LI class="ImprovementValueText"></LI>');
+}
+var resettext1 = function(){
+  $('.YearText').remove(); // this is my <canvas> element
+  $('#sidebarText').append('<LI class="YearText"></LI>');
+};
+
+var resettext2 = function(){
+  $('.PersonalValueText').remove(); // this is my <canvas> element
+  $('#sidebarText').append('<LI class="PersonalValueText"></LI>');
+};
+
+var resettext3 = function(){
+  $('.LandValueText').remove(); // this is my <canvas> element
+  $('#sidebarText').append('<LI class="LandValueText"></LI>');
+};
+
+var resettext4 = function(){
+  $('.ImprovementValueText').remove(); // this is my <canvas> element
+  $('#sidebarText').append('<LI class="ImprovementValueText"></LI>');
+};
+
 
 /*=== Map Functions ===*/
 function plotStationMarker(data) {
@@ -171,6 +208,23 @@ function leafletBuffer2 (bufferFeature) {
   return bufferFeature.map(function(a){
   console.log("buffer2 is now a geoJSON", L.geoJSON(a, {color: '#d0bcca'}))
   return L.geoJSON(a, {color: '#d0bcca'})
+  })
+}
+
+function makeBuffer3 (data){
+  return data.map(function(a){
+    if(a.properties.City == "San Francisco"){
+      var stationPoint = turf.point([a.geometry.coordinates[0],a.geometry.coordinates[1]]);
+      var stationBuffer3 = turf.buffer(stationPoint, 2, {units: 'miles'});
+      return stationBuffer3
+    }
+  })
+}
+
+function leafletBuffer3 (bufferFeature) {
+  return bufferFeature.map(function(a){
+  console.log("buffer3 is now a geoJSON", L.geoJSON(a, {color: '#E6DBE2'}))
+  return L.geoJSON(a, {color: '#E6DBE2'})
   })
 }
 
@@ -247,26 +301,35 @@ $.when(
 ).then(function(station) {
   //* All about stations *//
   ///* Plot buffer *///
+  removetext();
   stationData = JSON.parse(station).features;
   plotStationMarker(stationData);
   Buffer1 = makeBuffer1(stationData);
   Buffer1 = Buffer1.filter(function(x){
     return x!==undefined
   })
-
-
   Buffer1geojson = leafletBuffer1(Buffer1);
+
   Buffer2 = makeBuffer2(stationData);
   Buffer2 = Buffer2.filter(function(x){
     return x!==undefined
   })
   Buffer2geojson = leafletBuffer2(Buffer2);
+
+  Buffer3 = makeBuffer3(stationData);
+  Buffer3 = Buffer3.filter(function(x){
+    return x!==undefined
+  })
+  Buffer3geojson = leafletBuffer3(Buffer3);
+
   plotStationBuffer(Buffer1geojson);
   plotStationBuffer(Buffer2geojson);
+  plotStationBuffer(Buffer3geojson);
   
   ///* Turn buffer into feature collection *///
   Buffer1FC = turf.featureCollection(Buffer1);
   Buffer2FC = turf.featureCollection(Buffer2);
+  Buffer3FC = turf.featureCollection(Buffer3);
  
 
   //* sidebar interactions *//
@@ -277,21 +340,33 @@ $.when(
   });
 
   //* search interactions *//
+
+   
   $("#searchButton").on("click", function(e) {
     resetMap()
     resetCanvas1();
     resetCanvas2();
     resetCanvas3();
     resetCanvas4();
+    removetext();
+    recovertext();
+    resettext1();
+    resettext2();
+    resettext3();
+    resettext4();
     ptsArray=[];
     yearvalues1=[];
     yearvalues2=[];
+    yearvalues3=[];
     PPVvalues1 = [];
     PPVvalues2 = [];
+    PPVvalues3 = [];
     LVvalues1 = [];
     LVvalues2 = [];
+    LVvalues3 = [];
     IVvalues1 = [];
     IVvalues2 = [];
+    IVvalues3 = [];
     yearValue= $('#yearRange').val();
     neighValue= $('#neighInput').val().replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // this capitalize the first letter of each word
     proptValue= $('#proptInput').val();
@@ -333,6 +408,7 @@ $.when(
       //* yearBuilt *//
       var yearBuiltc1 = turf.collect(Buffer1FC, pointFC, 'yearBuilt', 'yearBuiltValue');
       var yearBuiltc2 = turf.collect(Buffer2FC, pointFC, 'yearBuilt', 'yearBuiltValue');
+      var yearBuiltc3 = turf.collect(Buffer3FC, pointFC, 'yearBuilt', 'yearBuiltValue');
       console.log("yearBuiltc1", yearBuiltc1);
       console.log("yearBuiltc2", yearBuiltc2);
       for (i=0;i<yearBuiltc1.features.length;i++){
@@ -363,6 +439,21 @@ $.when(
       for (i=0;i<values2.length;i++){
         values2[i] = Number(values2[i]);
       }
+
+      for (i=0;i<yearBuiltc3.features.length;i++){
+        if(yearBuiltc3.features[i].properties.yearBuiltValue.length!==0){
+          for(j=0;j<yearBuiltc3.features[i].properties.yearBuiltValue.length;j++){
+            yearvalues3.push(yearBuiltc3.features[i].properties.yearBuiltValue[j]) 
+          }
+        }
+      }
+      var values3 = yearvalues3;
+      values3 = values3.filter(function(x){
+        return x!==undefined
+      })
+      for (i=0;i<values3.length;i++){
+        values3[i] = Number(values3[i]);
+      }
       console.log("values for one of the 8 bart stations", values1, values2) //!! Needs to merge all buffers and then "collect" to get the value for all buffers as one
 
       if (values1.length===0){
@@ -378,15 +469,35 @@ $.when(
 
       }
 
+      if(values3.length === 0){
+        var buf3Stat = 0;
+      }else{
+        var buf3Stat = math.round(math.mean(values3));
+      }
+      ///* Text Generate *///
+
       if(values1.length===0 & values2.length===0){
         alert("There is no property in TOD!")
+        $('.YearText').text('')
       }
+      else if (values1.length!==0 & values2.length!==0){
+        if (buf1Stat >buf2Stat){
+          $('.YearText').text('Properties within 0.5 mile buffer is newer than properties within 1 mile buffer')
+        }else if (buf1Stat < buf2Stat){
+          $('.YearText').text('Properties within 0.5 mile buffer is elder than properties within 1 mile buffer')
+        }else if ( buf1Stat === buf2Stat){
+          $('.YearText').text('Properties Built Year within 0.5 mile buffer equals to properties within 1 mile buffer')
+        }
+      }
+
+      
 
       
       
       //* personal Property Value *//
       var PPVc1 = turf.collect(Buffer1FC, pointFC, 'Personal_Property_Value', 'Personal_Property_Value');
       var PPVc2 = turf.collect(Buffer2FC, pointFC, 'Personal_Property_Value', 'Personal_Property_Value');
+      var PPVc3 = turf.collect(Buffer3FC, pointFC, 'Personal_Property_Value', 'Personal_Property_Value');
       console.log("PPVc1", PPVc1);
       console.log("PPVc2", PPVc2);
       for (i=0;i<PPVc1.features.length;i++){
@@ -402,6 +513,8 @@ $.when(
       for (i=0;i<ppvvalues1.length;i++){
         ppvvalues1[i] = Number(ppvvalues1[i]);
       }
+
+
       for (i=0;i<PPVc2.features.length;i++){
         if(PPVc2.features[i].properties.Personal_Property_Value.length!==0){
           for(j=0;j<PPVc2.features[i].properties.Personal_Property_Value.length;j++){
@@ -415,7 +528,22 @@ $.when(
       for (i=0;i<ppvvalues2.length;i++){
         ppvvalues2[i] = Number(ppvvalues2[i]);
       }
-      console.log("values for one of the 8 bart stations", ppvvalues1, ppvvalues2) 
+
+
+      for (i=0;i<PPVc3.features.length;i++){
+        if(PPVc3.features[i].properties.Personal_Property_Value.length!==0){
+          for(j=0;j<PPVc3.features[i].properties.Personal_Property_Value.length;j++){
+            PPVvalues3.push(PPVc3.features[i].properties.Personal_Property_Value[j]) 
+          }
+        }
+      }
+      var ppvvalues3 = PPVvalues3.filter(function(x){
+        return x!==undefined
+      })
+      for (i=0;i<ppvvalues3.length;i++){
+        ppvvalues3[i] = Number(ppvvalues3[i]);
+      }
+      console.log("values for one of the 8 bart stations", ppvvalues1, ppvvalues2,ppvvalues3) 
 
       if (ppvvalues1.length===0){
         var buf1Stat2 = 0;
@@ -430,9 +558,32 @@ $.when(
 
       }
 
+      if(ppvvalues3.length === 0){
+        var buf3Stat2 = 0;
+      }else{
+        var buf3Stat2= math.round(math.mean(ppvvalues3));
+
+      }
+
+      ///* text generate*///
+
+      if(ppvvalues1.length===0 & ppvvalues2.length===0){
+        $('.PersonalValueText').text('')
+      }
+      else if (ppvvalues1.length!==0 & ppvvalues2.length!==0){
+        if (buf1Stat2 >buf2Stat2){
+          $('.PersonalValueText').text('Properties within 0.5 mile buffer have more personal property value than properties within 1 mile buffer')
+        }else if (buf1Stat2 < buf2Stat2){
+          $('.PersonalValueText').text('Properties within 0.5 mile buffer have less personal property value than properties within 1 mile buffer')
+        }else if ( buf1Stat2 === buf2Stat2){
+          $('.PersonalValueText').text('Properties personal property value within 0.5 mile buffer equals to properties within 1 mile buffer')
+        }
+      }
+
       //* Land Value *//
       var LVc1 = turf.collect(Buffer1FC, pointFC, 'Land_Value', 'Land_Value');
       var LVc2 = turf.collect(Buffer2FC, pointFC, 'Land_Value', 'Land_Value');
+      var LVc3 = turf.collect(Buffer3FC, pointFC, 'Land_Value', 'Land_Value');
       console.log("LVc1", LVc1);
       console.log("LVc2", LVc2);
       for (i=0;i<LVc1.features.length;i++){
@@ -448,6 +599,8 @@ $.when(
       for (i=0;i<lvvalues1.length;i++){
         lvvalues1[i] = Number(lvvalues1[i]);
       }
+
+
       for (i=0;i<LVc2.features.length;i++){
         if(LVc2.features[i].properties.Land_Value.length!==0){
           for(j=0;j<LVc2.features[i].properties.Land_Value.length;j++){
@@ -461,6 +614,21 @@ $.when(
       for (i=0;i<lvvalues2.length;i++){
         lvvalues2[i] = Number(lvvalues2[i]);
       }
+
+      for (i=0;i<LVc3.features.length;i++){
+        if(LVc3.features[i].properties.Land_Value.length!==0){
+          for(j=0;j<LVc3.features[i].properties.Land_Value.length;j++){
+            LVvalues3.push(LVc3.features[i].properties.Land_Value[j]) 
+          }
+        }
+      }
+      var lvvalues3 = LVvalues3.filter(function(x){
+        return x!==undefined
+      })
+      for (i=0;i<lvvalues3.length;i++){
+        lvvalues3[i] = Number(lvvalues3[i]);
+      }
+
       console.log("values for one of the 8 bart stations", lvvalues1, lvvalues2) 
 
       if (lvvalues1.length===0){
@@ -476,11 +644,35 @@ $.when(
 
       }
 
+      if(lvvalues3.length === 0){
+        var buf3Stat3 = 0;
+      }else{
+        var buf3Stat3= math.round(math.mean(lvvalues3));
+
+      }
+
+      ///* text generate *///
+
+      if(lvvalues1.length===0 & lvvalues2.length===0){
+        $('.LandValueText').text('')
+      }
+      else if (lvvalues1.length!==0 & lvvalues2.length!==0){
+        if (buf1Stat3 >buf2Stat3){
+          $('.LandValueText').text('Properties within 0.5 mile buffer have more land value than properties within 1 mile buffer')
+        }else if (buf1Stat3 < buf2Stat3){
+          $('.LandValueText').text('Properties within 0.5 mile buffer have less land value than properties within 1 mile buffer')
+        }else if ( buf1Stat3 === buf2Stat3){
+          $('.LandValueText').text('Properties land value within 0.5 mile buffer equals to properties within 1 mile buffer')
+        }
+      }
+
       //* Improvement Value *//
       var IVc1 = turf.collect(Buffer1FC, pointFC, 'Improvement_Value', 'Improvement_Value');
       var IVc2 = turf.collect(Buffer2FC, pointFC, 'Improvement_Value', 'Improvement_Value');
+      var IVc3 = turf.collect(Buffer3FC, pointFC, 'Improvement_Value', 'Improvement_Value');
       console.log("IVc1", IVc1);
       console.log("IVc2", IVc2);
+      console.log("IVc3", IVc3);
       for (i=0;i<IVc1.features.length;i++){
         if(IVc1.features[i].properties.Improvement_Value.length!==0){
           for(j=0;j<IVc1.features[i].properties.Improvement_Value.length;j++){
@@ -494,6 +686,8 @@ $.when(
       for (i=0;i<ivvalues1.length;i++){
         ivvalues1[i] = Number(ivvalues1[i]);
       }
+
+
       for (i=0;i<IVc2.features.length;i++){
         if(IVc2.features[i].properties.Improvement_Value.length!==0){
           for(j=0;j<IVc2.features[i].properties.Improvement_Value.length;j++){
@@ -507,7 +701,22 @@ $.when(
       for (i=0;i<ivvalues2.length;i++){
         ivvalues2[i] = Number(ivvalues2[i]);
       }
-      console.log("values for one of the 8 bart stations", ivvalues1, ivvalues2) 
+
+
+      for (i=0;i<IVc3.features.length;i++){
+        if(IVc3.features[i].properties.Improvement_Value.length!==0){
+          for(j=0;j<IVc3.features[i].properties.Improvement_Value.length;j++){
+            IVvalues3.push(IVc3.features[i].properties.Improvement_Value[j]) 
+          }
+        }
+      }
+      var ivvalues3 = IVvalues3.filter(function(x){
+        return x!==undefined
+      })
+      for (i=0;i<ivvalues3.length;i++){
+        ivvalues3[i] = Number(ivvalues3[i]);
+      }
+      console.log("values for one of the 8 bart stations", ivvalues1, ivvalues2, ivvalues3) 
 
       if (ivvalues1.length===0){
         var buf1Stat4 = 0;
@@ -522,6 +731,29 @@ $.when(
 
       }
 
+      if(ivvalues3.length === 0){
+        var buf3Stat4 = 0;
+      }else{
+        var buf3Stat4= math.round(math.mean(ivvalues3));
+
+      }
+
+      ///*text generate*///
+
+      if(ivvalues1.length===0 & ivvalues2.length===0){
+        $('.ImprovementValueText').text('')
+      }
+      else if (ivvalues1.length!==0 & ivvalues2.length!==0){
+        if (buf1Stat4 >buf2Stat4){
+          $('.ImprovementValueText').text('Properties within 0.5 mile buffer have more improvement value than properties within 1 mile buffer')
+        }else if (buf1Stat4 < buf2Stat4){
+          $('.ImprovementValueText').text('Properties within 0.5 mile buffer have less improvement value than properties within 1 mile buffer')
+        }else if ( buf1Stat4 === buf2Stat4){
+          $('.ImprovementValueText').text('Properties improvement value within 0.5 mile buffer equals to properties within 1 mile buffer')
+        }
+      }
+
+
 
      
 
@@ -531,16 +763,18 @@ $.when(
         barChart = new Chart(ctxBar, {
           type: "bar",
           data: {
-            labels: ["within 0.5 mile distance", "within 1 mile distance"],
+            labels: ["within 0.5 mile distance", "within 1 mile distance", "within 2 miles distance"],
             datasets: [
               {
                 data: [
                   buf1Stat,
                   buf2Stat,
+                  buf3Stat,
                 ],
                 backgroundColor: [
                   "rgba(151, 127, 140, 1)",
                   "rgba(208, 188, 202, 1)",
+                  "rgba(230, 219, 226, 1)",
                 ],
               },
             ],
@@ -568,16 +802,18 @@ $.when(
         barChart2 = new Chart(ctxBar2, {
           type: "bar",
           data: {
-            labels: ["within 0.5 mile distance", "within 1 mile distance"],
+            labels: ["within 0.5 mile distance", "within 1 mile distance","within 2 miles distance"],
             datasets: [
               {
                 data: [
                   buf1Stat2,
                   buf2Stat2,
+                  buf3Stat2,
                 ],
                 backgroundColor: [
                   "rgba(151, 127, 140, 1)",
                   "rgba(208, 188, 202, 1)",
+                  "rgba(230, 219, 226, 1)",
                 ],
               },
             ],
@@ -604,16 +840,18 @@ $.when(
         barChart3 = new Chart(ctxBar3, {
           type: "bar",
           data: {
-            labels: ["within 0.5 mile distance", "within 1 mile distance"],
+            labels: ["within 0.5 mile distance", "within 1 mile distance","whithin 2 miles distance"],
             datasets: [
               {
                 data: [
                   buf1Stat3,
                   buf2Stat3,
+                  buf3Stat3,
                 ],
                 backgroundColor: [
                   "rgba(151, 127, 140, 1)",
                   "rgba(208, 188, 202, 1)",
+                  "rgba(230, 219, 226, 1)",
                 ],
               },
             ],
@@ -640,16 +878,18 @@ $.when(
         barChart4 = new Chart(ctxBar4, {
           type: "bar",
           data: {
-            labels: ["within 0.5 mile distance", "within 1 mile distance"],
+            labels: ["within 0.5 mile distance", "within 1 mile distance","whithin 2 miles distance"],
             datasets: [
               {
                 data: [
                   buf1Stat4,
                   buf2Stat4,
+                  buf3Stat4,
                 ],
                 backgroundColor: [
                   "rgba(151, 127, 140, 1)",
                   "rgba(208, 188, 202, 1)",
+                  "rgba(230, 219, 226, 1)",
                 ],
               },
             ],
@@ -678,6 +918,7 @@ $.when(
       
 
   })  ;
+
 
 
 
