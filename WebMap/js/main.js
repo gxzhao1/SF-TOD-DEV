@@ -534,7 +534,6 @@ $.when(
             labels: ["within 0.5 mile distance", "within 1 mile distance"],
             datasets: [
               {
-                label: "Average Built Year of Property",
                 data: [
                   buf1Stat,
                   buf2Stat,
@@ -553,6 +552,15 @@ $.when(
                 min: 1900
               },
             },
+            plugins: {
+              title: {
+                display: true,
+                text: "Average Built Year of Property",
+              },
+              legend:{
+                display: false
+              }
+            }
           },
         }); 
    
@@ -563,7 +571,6 @@ $.when(
             labels: ["within 0.5 mile distance", "within 1 mile distance"],
             datasets: [
               {
-                label: "Average Personal Property Value",
                 data: [
                   buf1Stat2,
                   buf2Stat2,
@@ -581,7 +588,16 @@ $.when(
                 beginAtZero: true,
               },
             },
-          },
+            plugins: {
+              title: {
+                display: true,
+                text: "Average Personal Property Value",
+              },
+              legend:{
+                display: false
+              }
+          }
+        }
         }); 
 
         ctxBar3 = $("#barChart3");
@@ -591,7 +607,6 @@ $.when(
             labels: ["within 0.5 mile distance", "within 1 mile distance"],
             datasets: [
               {
-                label: "Average Land Value",
                 data: [
                   buf1Stat3,
                   buf2Stat3,
@@ -609,6 +624,15 @@ $.when(
                 beginAtZero: true,
               },
             },
+            plugins: {
+              title: {
+                display: true,
+                text: "Average Land Value",
+              },
+              legend:{
+                display: false
+              }
+          }
           },
         }); 
 
@@ -619,7 +643,6 @@ $.when(
             labels: ["within 0.5 mile distance", "within 1 mile distance"],
             datasets: [
               {
-                label: "Average Improvement Value",
                 data: [
                   buf1Stat4,
                   buf2Stat4,
@@ -637,6 +660,15 @@ $.when(
                 beginAtZero: true,
               },
             },
+            plugins: {
+              title: {
+                display: true,
+                text: "Average Improvement Value",
+              },
+              legend:{
+                display: false
+              }
+          }
           },
         }); 
 
